@@ -8,6 +8,8 @@
 - [Getting Started](#getting-started)
 - [Developer Documentation](#developer-documentation)
 
+> :warning: **Deprecation Warning** This version is outdated. Please refer to [the latest version](https://git.openlogisticsfoundation.org/silicon-economy/libraries/vda5050/libvda5050pp).
+
 ***NOTE: The libVDA5050++ library and the VDA5050 standard are still under development. Therefore, changes to the library interface in future releases cannot be ruled out.***
 
 # libVDA5050++

@@ -1,203 +1,139 @@
-# Table of Contents
-- [Table of Contents](#table-of-contents)
-- [Prerequisites for building the code](#prerequisites-for-building-the-code)
-- [Setting up the system](#setting-up-the-system)
-  - [Install cmake](#install-cmake)
-  - [Install Clang v9 / v10](#install-clang-v9--v10)
-    - [Ubuntu 20.04](#ubuntu-2004)
-    - [Ubuntu 18.04](#ubuntu-1804)
-  - [Install Catch2 (optional, will be downloaded via CPM, if not installed)](#install-catch2-optional-will-be-downloaded-via-cpm-if-not-installed)
-  - [Install git](#install-git)
-  - [Optional Software](#optional-software)
-    - [Install Mkdocs](#install-mkdocs)
-    - [Install Doxygen](#install-doxygen)
-    - [Install nlohmann::json (optional, will be downloaded via CPM, if not installed)](#install-nlohmannjson-optional-will-be-downloaded-via-cpm-if-not-installed)
-    - [Install paho.mqtt.cpp](#install-pahomqttcpp)
+# Get the source code
 
-# Prerequisites for building the code
-
-The installation guide is currently limited to a Debian-based system. In this tutorial we go through the installation based on an Ubuntu 18.04 or 20.04 is installed. 
-
-Software prerequisites:
-- cmake
-- clang
-- catch2
-- git
-
-Optional software:
-- mkdocs
-- doxygen
-- [nlohmann::json](https://github.com/nlohmann/json) (used by: ```extra::json_model```, ```extra::mqtt_connector```)
-- [paho.mqtt.cpp](https://github.com/eclipse/paho.mqtt.cpp) (used by: ```extra::mqtt_connector```)
-
-# Setting up the system
-
-In the following steps, we will install and setup all necessary software.
-
-## Install cmake
-
-You can install `cmake` using the following command:
-
-```sh
-sudo apt install cmake
-```
-
-## Install Clang v9 / v10
-
-By default lbVDA5050++ is build with clang. In the a first step we will setup clang on your Ubuntu 18.04 or 20.04 system.
-
-### Ubuntu 20.04 
-
-For Ubuntu 20.04 clang v10 will be installed. You can install it with the following command:
-
+The sources are managed via [git](https://git-scm.com/). Once you have installed git,
+you can clone the repository with:
 ```shell
-sudo apt install clang
+git clone https://git.openlogisticsfoundation.org/silicon-economy/libraries/vda5050/libvda5050pp.git
 ```
 
-### Ubuntu 18.04
+# Install the libVDA5050++ on Ubuntu 22.04
 
-For installing clang 9 on Ubuntu 18.04 you have to add a repository. Perform the following commands to install clang v9:
-
+The only prerequisite you need is [Docker](https://www.docker.com/get-started/). Once
+installed, you can start building the `.deb` Package.
+The following command will setup a docker image called `libvda5050pp-build`:
 ```shell
-sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-sudo apt-get update
-sudo apt install clang-9
+docker/build-container.sh
+```
+You can use the image to  build the `.deb` package and copy it to the `.` directory with:
+```shell
+docker/run-container.sh . default-deb
 ```
 
-## Install Catch2 (optional, will be downloaded via CPM, if not installed)
-We recommend to install `catch2` beside your libVDA5050++. For further information visit [Catch2 Github](https://github.com/catchorg/Catch2).
+# Build on your System
 
-Recommended file structure:
+#### Prerequisites
 
-```text
-Development Folder
- |- catch2
- |- Your Project / libvda5050pp
+- `c++17` compiler (like `clang>=11` or `g++>=9`)
+- [CMake](https://cmake.org/)
+- PahoMqttCpp
+  - `sudo apt install libpaho-mqtt-dev libpaho-mqttpp-dev openssl libssl-dev`
+  - or [build it from source](dependencies.md#pahomqttcpp)
+- Optionally check [dependencies](dependencies.md) for manual installation
+  of other packages
+
+#### Installation 
+
+You can build and install the libVDA5050++ via CMake on your system.
+A working `c++17` compiler like `clang` or `gcc` is required to build the library.
+First you have to make sure [CMake](https://cmake.org/) is installed.
+Most [dependencies](dependencies.md) will be downloaded via [CPM](https://github.com/cpm-cmake/CPM.cmake), if not already found on your system. Since the
+integration of [PahoMqttCpp](https://github.com/eclipse/paho.mqtt.cpp) is very clumsy with CPM, you need to install it by yourself. On Ubuntu you can install 
+the packages `libpaho-mqtt-dev libpaho-mqttpp-dev openssl libssl-dev`,
+on other systems you can [build it from source](dependencies.md#pahomqttcpp).
+
+First configure the build to install the libVDA5050++ to a CMake findable `<install_prefix>` (for example `/usr/local` or `~/.local`):
 ```
-
-Clone the `catch2` test-framework. 
-
-```sh
-git clone https://github.com/catchorg/Catch2.git
+cmake -Bbuild -DLIBVDA5050PP_INSTALL=ON -DCMAKE_INSTALL_PREFIX=<install_prefix>
 ```
-
-Navigate inside the `catch2` folder
-
-```sh
-cd catch2
-```
-
-Change the branch to `catch2` version 2 (v2.x)
-
-```sh
-git checkout v2.x
-```
-
-Configure the build process
-
-```sh
-cmake -Bbuild -H. -DBUILD_TESTING=OFF
-```
-
-Build and install `catch2` on your system
-
-```sh
-sudo cmake --build build/ --target install
-```
-
-## Install git
-
-For Debian-based distribution, such as Ubuntu, use the following command. For further information visit the [Git Homepage](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
-
-```sh
-sudo apt install git-all
-```
-
-## Optional Software
-
-`Mkdocs` and `Doxygen` are optional software. You can install them to build the documentation on your system. The complete documentation is also available on the Gitlab-Pages in the libVDA5050++ repository.
-
-### Install Mkdocs
-
-To install `Mkdocs` on your system, execute the following command:
-
-```sh
-pip3 install mkdocs
-```
-
-If you don't have `python3` and `pip3` installed on your system you can also install mkdocs via `apt`. We encountered the problem that sometimes code blocks in the documentation are displayed as a single line with the `apt` version of `mkdocs`. Hence we recommend to install `mkdocs` with `pip3`.
-
-```sh
-sudo apt install mkdocs
-```
-### Install Doxygen
-
-To install `Doxygen` on your system, execute the following command:
-
-```sh
-sudo apt install doxygen
-```
-
-### Install nlohmann::json (optional, will be downloaded via CPM, if not installed)
-
-Clone the project repository:
-
-```sh
-git clone --depth 1 --branch v3.9.1 https://github.com/nlohmann/json
-```
-
-Configure the build directory:
-
-```sh
-cmake -Bbuild -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=/usr/bin/clang++-10
-```
-Optionally add the `-DCMAKE_INSTALL_PREFIX=$HOME/.local` Flag to install
-the library locally.
-
-Finally install the library:
-
-```sh
+Then install:
+```shell
 cmake --build build --target install
 ```
 
-### Install paho.mqtt.cpp
+Note, that all [dependencies](dependencies.md), which are not already installed will automatically be
+installed into the prefix by CMake.  You can enable a _clean_ installation with `-DLIBVDA5050PP_CLEAN_INSTALL=ON` to
+remove the unused ones (which are already included in the `libvda5050++.so`), if you do this please check the `cmake/PostInstall.cmake` script, since
+it can interfere with your existing installations.
 
-Prerequisites:
-
-```sh
-sudo apt-get install libssl-dev
-```
-
-Build and install paho.mqtt.c:
+Normal install scheme:
 
 ```
-git clone --depth 1 --branch v1.3.8 https://github.com/eclipse/paho.mqtt.c.git
-cd paho.mqtt.c
-cmake -Bbuild -H. -DPAHO_ENABLE_TESTING=OFF -DPAHO_BUILD_STATIC=ON \
-    -DPAHO_WITH_SSL=ON -DPAHO_HIGH_PERFORMANCE=ON \
-    -DCMAKE_CXX_COMPILER=/usr/bin/clang++-10
-sudo cmake --build build/ --target install
-sudo ldconfig
+<install_prefix>
+├── include
+│   ├── eventpp
+│   ├── nlohmann
+│   ├── toml++
+│   ├── vda5050
+│   └── vda5050++
+├── lib
+│   ├── cmake
+│   │   ├── eventpp
+│   │   ├── libvda5050++
+│   │   ├── tomlplusplus
+│   │   └── vda5050_message_structs
+│   ├── libvda5050_message_structs.a
+│   ├── libvda5050++.so.0 -> libvda5050++.so.1.0.0
+│   └── libvda5050++.so.1.0.0
+└── share
+    ├── cmake
+    │   └── nlohmann_json
+    ├── eventpp
+    ├── pkgconfig
+    └── tomlplusplus
 ```
 
-Optionally add the `-DCMAKE_INSTALL_PREFIX=$HOME/.local` flag to install
-the library locally.
-
-
-Build and install paho.mqtt.cpp:
-
+Clean install scheme:
 ```
-git clone --depth 1 --branch v1.2.0 https://github.com/eclipse/paho.mqtt.cpp
-cd paho.mqtt.cpp
-cmake -Bbuild -H. -DPAHO_BUILD_STATIC=ON \
-  -DPAHO_BUILD_DOCUMENTATION=TRUE -DPAHO_BUILD_SAMPLES=TRUE \
-  -DCMAKE_CXX_COMPILER=/usr/bin/clang++-10
-sudo cmake --build build/ --target install
-sudo ldconfig
+<install_prefix>
+├── include
+│   ├── vda5050
+│   └── vda5050++
+└── lib
+    ├── cmake
+    │   ├── libvda5050++
+    │   └── vda5050_message_structs
+    ├── libvda5050++.so.0 -> libvda5050++.so.1.0.0
+    ├── libvda5050++.so.1.0.0
+    └── x86_64-linux-gnu
+        └── libvda5050_message_structs.a
 ```
 
-If the `paho.mqtt.c` library was installed locally, add the `-DCMAKE_PREFIX_PATH=$HOME/.local` flag,
-to locate it.
+### Configuration Options:
 
-Optionally add the `-DCMAKE_INSTALL_PREFIX=$HOME/.local` flag to install
-the (paho.mqtt.cpp) library locally.
+| Variable                                         | Description                                                                 |
+| ------------------------------------------------ | --------------------------------------------------------------------------- |
+| `LIBVDA5050PP_BUILD_DEB`                         | Enable `.deb` target                                                        |
+| `LIBVDA5050PP_BUILD_DOCS`                        | Enable `mkdocs` target                                                      |
+| `LIBVDA5050PP_BUILD_STATIC`                      | Build a static library instead of a dynamic one                             |
+| `LIBVDA5050PP_CLEAN_INSTALL`                     | Enable _clean_ installation                                                 |
+| `LIBVDA5050PP_INSTALL`                           | Generate install targets                                                    |
+| `LIBVDA5050PP_USE_GLIBCXX_DEBUG`                 | Compile with **public** `-D_GLIBCXX_DEBUG` flag                             |
+| `LIBVDA5050PP_CATCH2_VERSION`                    | Overwrite the Catch2 Version                                                |
+| `LIBVDA5050PP_EVENTPP_VERSION`                   | Overwrite the Eventpp Version                                               |
+| `LIBVDA5050PP_FMT_VERSION`                       | Overwrite the FMT Version                                                   |
+| `LIBVDA5050PP_NLOHMANN_JSON_VERSION`             | Overwrite the nlohmann_json Version                                         |
+| `LIBVDA5050PP_SPDLOG_VERSION`                    | Overwrite the spdlog Version                                                |
+| `LIBVDA5050PP_TOMLPLUSPLUS_VERSION`              | Overwrite the TOMLPLUSPLUS Version                                          |
+| `LIBVDA5050PP_VDA5050_MESSAGE_STRUCTS_VERSION`   | Overwrite the vda5050_message_structs Version                               |
+| `LIBVDA5050PP_VDA5050_MESSAGE_STRUCTS_DEP_LOCAL` | Expect the vda5050_message_structs repo to be next to the libVDA5050++ repo |
+
+
+# Build as a submodule
+
+Another option is to build the libVDA5050++ as a submodule of your Adapter.
+The prerequisites are the same, as in [Build on your System](#build-on-your-system).
+
+1. Clone the libVDA5050++ repository in a folder of your Adapter like `third_party/libvda5050++`
+2. Include the subdirectory with CMake:
+```cmake
+add_subdirectory(third_party/libvda5050++)
+```
+
+
+# Linking the libVDA5050++
+
+With CMake, you can add the following lines in your `CMakeLists.txt`:
+```cmake
+find_package(libvda5050++ REQUIRED)
+target_link_libraries(my_app PUBLIC libvda5050++::vda5050++)
+```

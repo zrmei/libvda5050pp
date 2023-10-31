@@ -1,63 +1,44 @@
-// Copyright Open Logistics Foundation
-// 
-// Licensed under the Open Logistics Foundation License 1.3.
-// For details on the licensing terms, see the LICENSE file.
-// SPDX-License-Identifier: OLFL-1.3
-// 
-// TODO: Short description
+//  Copyright Open Logistics Foundation
+//
+//  Licensed under the Open Logistics Foundation License 1.3.
+//  For details on the licensing terms, see the LICENSE file.
+//  SPDX-License-Identifier: OLFL-1.3
 //
 
-#ifndef TEST_INCLUDE_TEST_TEST_ACTION_HANDLER
-#define TEST_INCLUDE_TEST_TEST_ACTION_HANDLER
+#ifndef TEST_INCLUDE_TEST_TEST_ACTION_HANDLER_H_
+#define TEST_INCLUDE_TEST_TEST_ACTION_HANDLER_H_
 
-#include <map>
-
-#include "vda5050++/interface_agv/action_handler.h"
+#include "vda5050++/handler/simple_action_handler.h"
 
 namespace test {
 
-class TestActionHandler : public vda5050pp::interface_agv::ActionHandler {
-private:
-  int times_start_called_;
-  int times_pause_called_;
-  int times_resume_called_;
-  int times_stop_called_;
-
-  static bool auto_fail_on_stop_;
-  static bool auto_finish_on_stop_;
-  static bool auto_start_;
-  static bool auto_pause_;
-  static bool auto_resume_;
-
-public:
-  int timesStartCalled() const noexcept(true);
-  int timesPauseCalled() const noexcept(true);
-  int timesResumeCalled() const noexcept(true);
-  int timesStopCalled() const noexcept(true);
-
-  static void setAutoFailOnStop(bool auto_fail_on_stop);
-  static void setAutoFinishOnStop(bool auto_finish_on_stop);
-  static void setAutoStart(bool auto_start);
-  static void setAutoPause(bool auto_pause);
-  static void setAutoResume(bool auto_resume);
-
-  void doFinished();
-  void doFailed();
-  void doStarted();
-  void doPaused();
-  void doResumed();
-
-  TestActionHandler() noexcept(true);
-  virtual ~TestActionHandler();
-  virtual void start(const vda5050pp::Action &action) override;
-  virtual void pause(const vda5050pp::Action &action) override;
-  virtual void resume(const vda5050pp::Action &action) override;
-  virtual void stop(const vda5050pp::Action &action) override;
+struct ActionHandlerData {
+  vda5050::Action action;
 };
 
-extern std::map<std::string, std::reference_wrapper<test::TestActionHandler>>
-    test_action_handler_by_id;
+struct ActionCallbackFutures {
+  std::future<void> on_start_called;
+  std::future<void> on_pause_called;
+  std::future<void> on_resume_called;
+  std::future<void> on_cancel_called;
+};
+
+class TestActionHandler : public vda5050pp::handler::SimpleActionHandler {
+private:
+  std::promise<ActionCallbackFutures> prepare_called_;
+
+public:
+  TestActionHandler(const vda5050pp::agv_description::ActionDeclaration &decl)
+      : vda5050pp::handler::SimpleActionHandler(decl) {}
+  virtual ~TestActionHandler() = default;
+
+  vda5050pp::handler::ActionCallbacks prepare(
+      std::shared_ptr<vda5050pp::handler::ActionState> action_state,
+      std::shared_ptr<vda5050pp::handler::ParametersMap> parameters) noexcept(false) override;
+
+  std::future<ActionCallbackFutures> getPrepareFuture() noexcept(true);
+};
 
 }  // namespace test
 
-#endif /* TEST_INCLUDE_TEST_TEST_ACTION_HANDLER */
+#endif  // TEST_INCLUDE_TEST_TEST_ACTION_HANDLER_H_

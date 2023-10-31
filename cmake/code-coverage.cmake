@@ -344,6 +344,16 @@ function(target_code_coverage TARGET_NAME)
             -show-line-counts-or-regions ${EXCLUDE_REGEX}
           DEPENDS ccov-processing-${target_code_coverage_COVERAGE_TARGET_NAME})
 
+        # Saves details of the coverage information to a file
+        add_custom_target(
+          ccov-show-file-${target_code_coverage_COVERAGE_TARGET_NAME}
+          COMMAND
+          ${LLVM_COV_PATH} show $<TARGET_FILE:${TARGET_NAME}> ${SO_OBJECTS}
+          -instr-profile=${target_code_coverage_COVERAGE_TARGET_NAME}.profdata
+          --show-line-counts ${EXCLUDE_REGEX} >
+          ${CMAKE_COVERAGE_OUTPUT_DIRECTORY}/${target_code_coverage_COVERAGE_TARGET_NAME}.txt
+          DEPENDS ccov-processing-${target_code_coverage_COVERAGE_TARGET_NAME})
+
         # Print out a summary of the coverage information to the command line
         add_custom_target(
           ccov-report-${target_code_coverage_COVERAGE_TARGET_NAME}

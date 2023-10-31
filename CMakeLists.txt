@@ -1,135 +1,145 @@
-cmake_minimum_required(VERSION 3.16)# Adds instrumentation to all targets
+cmake_minimum_required(VERSION 3.16) # Adds instrumentation to all targets
 
-# Do not check system dependencies for changes, when rebuilding. 
+# Do not check system dependencies for changes, when rebuilding.
 # Ninja build scripts always flag them as dirty, so each time the project is built
 # every file is (wrongly) forcefully rebuilt.
-if (CMAKE_GENERATOR MATCHES "Ninja")
+if(CMAKE_GENERATOR MATCHES "Ninja")
     file(
-        WRITE "${CMAKE_BINARY_DIR}/GNUMakeRulesOverwrite.cmake" 
-            "STRING(REPLACE \"-MD\" \"-MMD\" CMAKE_DEPFILE_FLAGS_C \"\${CMAKE_DEPFILE_FLAGS_C}\")\n"
-            "STRING(REPLACE \"-MD\" \"-MMD\" CMAKE_DEPFILE_FLAGS_CXX \"\${CMAKE_DEPFILE_FLAGS_CXX}\")\n"
+        WRITE "${CMAKE_BINARY_DIR}/GNUMakeRulesOverwrite.cmake"
+        "STRING(REPLACE \"-MD\" \"-MMD\" CMAKE_DEPFILE_FLAGS_C \"\${CMAKE_DEPFILE_FLAGS_C}\")\n"
+        "STRING(REPLACE \"-MD\" \"-MMD\" CMAKE_DEPFILE_FLAGS_CXX \"\${CMAKE_DEPFILE_FLAGS_CXX}\")\n"
     )
     set(CMAKE_USER_MAKE_RULES_OVERRIDE "${CMAKE_BINARY_DIR}/GNUMakeRulesOverwrite.cmake" CACHE INTERNAL "")
 endif()
 
-
 project(libvda5050++
-        VERSION 1.0.0
-        DESCRIPTION "Helper library for building VDA 5050 compliant software"
-        LANGUAGES CXX)
-
+    VERSION 2.0.0
+    DESCRIPTION "Helper library for building VDA 5050 compliant software"
+    LANGUAGES CXX)
 
 # declare CPM
 include(cmake/CPM.cmake)
-option(LIBVDA5050PP_SPTN_DEP_LOCAL "libVDA5050++: Use SimplePTN soruces next to libvda5050pp folder" OFF)
-if(LIBVDA5050PP_SPTN_DEP_LOCAL)
-  set(CPM_SimplePTN_SOURCE ${PROJECT_SOURCE_DIR}/../simpleptn)
+option(LIBVDA5050PP_VDA5050_MESSAGE_STRUCTS_DEP_LOCAL "libVDA5050++: Use vda5050_message_structs soruces next to libvda5050pp folder" OFF)
+
+# check environment if dependencies are forced to be local
+if($ENV{libvda5050pp_dev_env_local})
+    message(STATUS "Force development dependencies to be included as local repositories.")
+    set(LIBVDA5050PP_VDA5050_MESSAGE_STRUCTS_DEP_LOCAL ON)
 endif()
 
+if(LIBVDA5050PP_VDA5050_MESSAGE_STRUCTS_DEP_LOCAL)
+    set(CPM_vda5050_message_structs_SOURCE ${PROJECT_SOURCE_DIR}/../vda5050_message_structs)
+endif()
 
 # Compiler flag function
 include(CheckCXXCompilerFlag)
+
 function(set_compiler_flag flag)
     check_cxx_compiler_flag("${flag}" flag_supported)
+
     if(flag_supported)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}" PARENT_SCOPE)
+        set(LIBVDA5050PP_CMAKE_CXX_FLAGS "${LIBVDA5050PP_CMAKE_CXX_FLAGS};${flag}" PARENT_SCOPE)
     else()
         message(STATUS "CXX_FLAG ${flag} not supported")
     endif()
+
     unset(flag_supported CACHE)
 endfunction()
 
 set_compiler_flag("-Wall")
 set_compiler_flag("-Wextra")
-set_compiler_flag("-pedantic")
+set_compiler_flag("-Wpedantic")
+set_compiler_flag("-Wshadow")
+set_compiler_flag("-Wconversion")
+set_compiler_flag("-Werror")
 
-option(CI_ENABLE_ALL "Enable all build options (used by CI)" OFF)
-if (CI_ENABLE_ALL)
-    set(BUILD_DOCS ON)
+# CI-Options
+option(LIBVDA5050PP_CI_ENABLE_ALL "Enable all build options (used by CI)" OFF)
+
+if(LIBVDA5050PP_CI_ENABLE_ALL)
+    message(STATUS "Enabling libVDA5050++ CI-Build")
+    set(LIBVDA5050PP_BUILD_DOCS ON)
     set(BUILD_TESTING ON)
     set(CODE_COVERAGE ON)
-    set(USE_EXTRA_LOGGER_UTILS  ON)
-    set(USE_EXTRA_JSON_MODEL ON)
-    set(USE_EXTRA_MQTT_CONNECTOR ON)
+    set(LIBVDA5050PP_BUILD_STATIC ON)
+endif()
+
+# Debug flags
+option(LIBVDA5050PP_USE_GLIBCXX_DEBUG "Use -D_GLIBCXX_DEBUG" OFF)
+
+if(LIBVDA5050PP_USE_GLIBCXX_DEBUG)
+    message(STATUS "Using directory wide _GLIBCXX_DEBUG for DEBUG config")
+    add_compile_definitions(
+        $<$<CONFIG:Debug>:_GLIBCXX_DEBUG>
+    )
 endif()
 
 # If this is the main project
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    set(LIBVDA5050PP_MAIN_PROJECT ON)
 
     # use c++ instead of g++
     set(CMAKE_CXX_EXTENSIONS OFF)
 
     # include doxygen
-    option(BUILD_DOCS "Build documentation with doxygen and mkdocs" OFF)
-    if (BUILD_DOCS)
+    option(LIBVDA5050PP_BUILD_DOCS "Build libVDA5050++ documentation with doxygen and mkdocs" OFF)
+
+    if(LIBVDA5050PP_BUILD_DOCS)
         add_subdirectory(docs)
     endif()
-endif()
-
-# include tests
-include(CTest)
-if (BUILD_TESTING)
-    add_subdirectory(test)
+else()
+    set(LIBVDA5050PP_MAIN_PROJECT OFF)
 endif()
 
 # only use code coverage with clang (include here, such that child projects do not initialize
-#                                    code-cov before us)
-if (BUILD_TESTING AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+# code-cov before us)
+if(BUILD_TESTING AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     # Include to enable code coverage for SonarQube
     include(cmake/code-coverage.cmake)
 endif()
 
-# include SimplePTN
-if (NOT LIBVDA5050PP_SPTN_DEP_LOCAL)
-    find_package(SimplePTN 1.0.0 QUIET)
-endif()
+# include dependencies
+include(cmake/ensure-deps.cmake)
 
-if (SimplePTN_FOUND)
-        message(STATUS "Found SimplePTN installation.")
-else()
-    set(SimplePTN_URL "https://git.openlogisticsfoundation.org/silicon-economy/libraries/vda5050/simpleptn.git"
-        CACHE STRING "Overwrite the SimplePTN repo URL")
-    cpmaddpackage( NAME SimplePTN
-        GIT_REPOSITORY ${SimplePTN_URL}
-        GIT_TAG main
-        EXCLUDE_FROM_ALL NO
-        )
-endif()
-
-
-# include libvda5050 source code
+# include libvda5050++ source code
 add_subdirectory(src)
 
-# include extra dirs
-add_subdirectory(extra)
+# include tests
+include(CTest)
 
-
-# only use code coverage with clang
-if (CODE_COVERAGE AND BUILD_TESTING AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    target_code_coverage(vda5050++_test) 
+if(BUILD_TESTING)
+    add_subdirectory(test)
 endif()
 
-# Install part #################################################################
+# only use code coverage with clang
+if(CODE_COVERAGE AND BUILD_TESTING AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    message(STATUS "Enabling code coverage for vda5050++ and vda5050++_test")
+    target_code_coverage(vda5050++)
+    target_code_coverage(vda5050++_test
+        ARGS
+        --reporter junit --out vda5050++_test.xml
+    )
+endif()
 
-# generate the config file that is includes the exports
-include(CMakePackageConfigHelpers)
-configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/libvda5050++Config.cmake.in
-  "${CMAKE_CURRENT_BINARY_DIR}/libvda5050++Config.cmake"
-  INSTALL_DESTINATION lib/cmake/${PROJECT_NAME}
-  NO_SET_AND_CHECK_MACRO
-  NO_CHECK_REQUIRED_COMPONENTS_MACRO
-)
+# install
+option(LIBVDA5050PP_INSTALL "Generate libVDA5050++ install targets." ${LIBVDA5050PP_MAIN_PROJECT})
+option(LIBVDA5050PP_CLEAN_INSTALL "Cleanup unused installed libVDA5050++ files. (May interfere with (not found) exsting installations of dependencies used by libVDA5050++. Check cmake/PostInstall.sh)" OFF)
+option(LIBVDA5050PP_BUILD_DEB "Build a .deb package (UNIX only)." OFF)
 
-# generate the version matching file
-write_basic_package_version_file(
-  "${CMAKE_CURRENT_BINARY_DIR}/libvda5050++ConfigVersion.cmake"
-  VERSION "${libvda5050++_VERSION_MAJOR}.${libvda5050++_VERSION_MINOR}"
-  COMPATIBILITY AnyNewerVersion
-)
+if(LIBVDA5050PP_INSTALL)
+    include(cmake/install.cmake)
 
-# install helper files
-install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/libvda5050++Config.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/libvda5050++ConfigVersion.cmake
-  DESTINATION lib/cmake/${PROJECT_NAME}
-)
+    if(LIBVDA5050PP_BUILD_DEB)
+        include(cmake/deb.cmake)
+    endif()
+
+    include(cmake/enable-clean-install.cmake)
+endif()
+
+# examples
+option(LIBVDA5050PP_EXAMPLES "Generate libVDA5050++ exampes targets." OFF})
+
+if(LIBVDA5050PP_EXAMPLES)
+    message(STATUS "Generating libVDA5050++ example targets.")
+    add_subdirectory(examples)
+endif()

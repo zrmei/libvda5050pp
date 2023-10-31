@@ -1,0 +1,206 @@
+# Copyright Open Logistics Foundation
+# 
+# Licensed under the Open Logistics Foundation License 1.3.
+# For details on the licensing terms, see the LICENSE file.
+# SPDX-License-Identifier: OLFL-1.3
+# 
+# This is an example configuration file for the libVDA5050++.
+# All toml tables are filled here.
+# 
+
+
+
+[agv_description]
+agv_id = 'my_agv_id' # The AGV's ID, used as a part of the MQTT ID
+description = 'my_agv_description' # The description of the AGV, part of the factsheet
+manufacturer = 'my_manufacturer' # The manufactrer of the AGV, used in the MQTT topic and headers
+serial_number = 'my_serial_number' # The serial number of the AGV, used in the MQTT topic and headers
+
+[agv_description.agv_geometry]
+# The AGV's geometry, used in the factsheet. (Format as in VDA5050)
+# alternatlively json_file with a path to the json file can be set.
+json = '''{
+  "envelopes2d": [
+    {
+      "description": "Envelope one description",
+      "polygonPoints": [
+        {
+          "x": 0.0,
+          "y": 0.0
+        },
+        {
+          "x": 1.0,
+          "y": 0.0
+        },
+        {
+          "x": 1.0,
+          "y": 1.0
+        },
+        {
+          "x": 0.0,
+          "y": 1.0
+        },
+        {
+          "x": 0.0,
+          "y": 0.0
+        }
+      ],
+      "set": "env1"
+    }
+  ],
+  "envelopes3d": [
+    {
+      "data": {
+        "description": "my_data_desc",
+        "type": "my_data_type"
+      },
+      "description": "this is a description of envelope 2",
+      "format": "my_format",
+      "set": "env2",
+      "url": "http://example.com/my_envelope.json"
+    }
+  ],
+  "wheelDefinitions": [
+    {
+      "diameter": 0.1,
+      "isActiveDriven": true,
+      "isActiveSteered": true,
+      "position": {
+        "theta": 0.0,
+        "x": 0.0,
+        "y": 0.0
+      },
+      "type": "CASTER",
+      "width": 0.1
+    },
+    {
+      "diameter": 0.1,
+      "isActiveDriven": true,
+      "isActiveSteered": true,
+      "position": {
+        "theta": 1.0,
+        "x": 1.0,
+        "y": 1.0
+      },
+      "type": "CASTER",
+      "width": 0.1
+    }
+  ]
+}'''
+
+[agv_description.battery]
+charge_type = 'Li-Ion' # Charge type
+max_charge = 3.7000000000000002 # Maximum charge [Ah]
+max_reach = 10000 # Maxumum reach [m]
+max_voltage = 24.0 # Maximum Voltage [V]
+
+[agv_description.load_specification]
+# The AGV's load specification, used in the factsheet. (Format as in VDA5050)
+# alternatlively json_file with a path to the json file can be set.
+json = '''{
+  "loadPositions": [
+    "LEFT",
+    "RIGHT"
+  ],
+  "loadSets": [
+    {
+      "boundingBoxReference": {
+        "x": 0.4,
+        "y": 0.3,
+        "z": 0.2
+      },
+      "description": "This is load set 1",
+      "loadPositions": [
+        "LEFT"
+      ],
+      "loadType": "EPAL",
+      "maxWeight": 60.0,
+      "setName": "load_set_1"
+    }
+  ]
+}'''
+
+[agv_description.localization_parameters]
+# The AGV's localizaion parameters, used in the factsheet. (Format as in VDA5050)
+# alternatlively json_file with a path to the json file can be set.
+json = '''{
+  "description": "These are my localization parameters",
+  "type": "The type of my localization parameters"
+}'''
+
+[agv_description.physical_parameters]
+# The AGV's physica parameters, used in the factsheet. (Format as in VDA5050)
+# alternatlively json_file with a path to the json file can be set.
+json = '''{
+  "accelerationMax": 1.0,
+  "decelerationMax": 2.5,
+  "heightMax": 0.6,
+  "heightMin": 0.5,
+  "length": 1.3,
+  "speedMax": 2.4,
+  "speedMin": 0.1,
+  "width": 0.45
+}'''
+
+[agv_description.simple_protocol_limits]
+id_numerical_only = false  # Allow non-numeric characters in all ids
+max_id_len = 12 # Maximum length of all ids
+max_load_id_len = 12 # Maximum length of load ids
+
+[agv_description.type_specification]
+# The AGV's type specification, used in the factsheet. (Format as in VDA5050)
+# alternatlively json_file with a path to the json file can be set.
+json = '''{
+  "agvClass": "CARRIER",
+  "agvKinematic": "OMNI",
+  "localizationTypes": [
+    "GRID",
+    "RFID"
+  ],
+  "maxLoadMass": 120.0,
+  "navigationTypes": [
+    "AUTONOMOUS",
+    "VIRTUAL_LINE_GUIDED"
+  ],
+  "seriesDescription": "My AGV series description",
+  "seriesName": "TEST_SERIES_1"
+}'''
+
+[global]
+log_level = 'debug' # The global log-level used as a fallback by each module
+module_black_list = [ 'NodeReachedHandler' ] # A list of modules that should not be loaded
+
+[global.event_manager_options]
+synchronous_event_dispatch = false # If false, the event managers will use event threads (default: false)
+
+[module.Mqtt]
+enable_cert_check = true # Enable MQTT certificate check
+interface = 'vda5050_iface' # The interface used for the MQTT topic
+log_level = 'debug' # The log level for the MQTT module
+password = 'p4$$w0rd' # The MQTT user password
+server = 'ssl://mqtt.example.com:8883' # The MQTT connection string (as in PAHO)
+use_ssl = true # Use SSL for the MQTT connection
+username = 'mqtt_username' # The MQTT username
+version_overwrite = 'v2' # The version used in the MQTT topic
+
+[module.NodeReachedHandler]
+default_node_deviation_theta = 0.10000000000000001 # The default deviation for each node without a specified deviation
+default_node_deviation_xy = 0.10000000000000001 # The default deviation for each node without a specified deviation
+log_level = 'debug' # The log level of the NodeReachedHandler
+overwrite_node_deviation_theta = 0.10000000000000001 # Force the deviation for each node (default: unset)
+overwrite_node_deviation_xy = 0.10000000000000001 # Force the deviation for each node (default: unset)
+
+[module.QueryEventHandler]
+default_accept_zone_set_success = true # The default success of each AcceptZoneSet event
+default_pauseable_success = true # The default success of each QueryPauseable event
+default_resumable_success = true # The default success of each QueryResumable event
+default_zone_sets = [ 'zone1', 'zone2', 'zone3' ] # The default zone sets, which will be accepted
+log_level = 'debug' # The QueryEventHandler log levl
+
+[module.StateUpdateTimer]
+log_level = 'debug' # The log level of the StateUpdateTimer
+max_update_period_ms = 24000 # The maximum state update period in ms
+
+[module.VisualizationTimer]
+log_level = 'debug' # The log level of the VisualizationTimer
+visualization_period_ms = 100 # The visualization period in ms

@@ -1,5 +1,7 @@
 find_package(Threads REQUIRED)
-find_package(Catch2 2.13.10 QUIET)
+
+set(LIBVDA5050PP_CATCH2_VERSION "2.13.10" CACHE STRING "Overwrite catch2 version")
+find_package(Catch2 ${LIBVDA5050PP_CATCH2_VERSION} QUIET)
 
 if(Catch2_FOUND)
   message(STATUS "Found Catch2 installation.")
@@ -7,50 +9,78 @@ else()
   CPMAddPackage(
     NAME Catch2
     GITHUB_REPOSITORY catchorg/Catch2
-    VERSION 2.13.10
+    VERSION ${LIBVDA5050PP_CATCH2_VERSION}
   )
+endif()
+
+if(Catch2_SOURCE_DIR)
   list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/contrib)
-  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} PARENT_SCOPE)
 endif()
 
 include(Catch)
 
-add_compile_definitions(VDA5050PP_VERSION=${PROJECT_VERSION})
 add_executable(vda5050++_test
   ${PROJECT_SOURCE_DIR}/test/main.cpp
-  ${PROJECT_SOURCE_DIR}/test/src/console_logger.cpp
-  ${PROJECT_SOURCE_DIR}/test/src/dump.cpp
-  ${PROJECT_SOURCE_DIR}/test/src/order_factory.cpp
+  ${PROJECT_SOURCE_DIR}/test/src/data.cpp
   ${PROJECT_SOURCE_DIR}/test/src/test_action_handler.cpp
-  ${PROJECT_SOURCE_DIR}/test/src/test_connector.cpp
-  ${PROJECT_SOURCE_DIR}/test/src/test_continuous_navigation_handler.cpp
-  ${PROJECT_SOURCE_DIR}/test/src/test_odometry_handler.cpp
-  ${PROJECT_SOURCE_DIR}/test/src/test_pause_resume_handler.cpp
-  ${PROJECT_SOURCE_DIR}/test/src/test_step_based_navigation_handler.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/common/any_ptr.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/config.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/action_event_manager.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/agv_handler/action_event_handler.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/agv_handler/functional.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/agv_handler/navigation_event_handler.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/agv_handler/node_reached_handler.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/agv_handler/query_event_handler.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/checks/action.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/checks/header.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/checks/order.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/core/common/blocking_queue.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/common/conversion.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/common/exception.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/common/formatters.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/core/common/interruptable_timer.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/core/common/math/geometry.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/core/common/math/linear_path_length_calculator.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/common/scoped_thread.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/core/common/semaphore.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/logic/action_manager.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/logic/combined_tests.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/logic/continuous_navigation.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/logic/init_position.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/logic/net_manager.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/logic/parallel_launch_net.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/logic/sync_net.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/validation/action_declared_validator.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/validation/header_target_validator.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/validation/header_version_validator.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/validation/order_append_validator.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/validation/order_graph_consistency_validator.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/validation/order_id_validator.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/validation/order_reachable_validator.cpp
-  ${PROJECT_SOURCE_DIR}/test/vda5050++/model/equality.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/events/event_control_blocks.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/factsheet/gather.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/generic_event_manager.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/handler/action_event_handler.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/handler/action_state.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/interpreter/functional.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/messages/message_event_handler.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/order/action_task.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/order/navigation_task.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/order/scheduler.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/state/graph.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/state/state_event_handler.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/core/validation/validation_event_handler.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/event_behaviour/interpreter_event_behaviour.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/event_behaviour/status_event_behaviour.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/events/event_handle.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/events/synchronized_event.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/handle.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/handler/base_navigation_handler.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/misc/action_parameter_view.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/sinks/navigation_sink.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/sinks/status_sink.cpp
 )
-target_link_libraries(vda5050++_test Catch2::Catch2 vda5050++ Threads::Threads)
+target_link_libraries(vda5050++_test
+  Catch2::Catch2
+  vda5050++
+  Threads::Threads
+  fmt::fmt
+  spdlog::spdlog
+  eventpp::eventpp
+  $<BUILD_INTERFACE:tomlplusplus::tomlplusplus>
+)
 
-target_include_directories(vda5050++_test PRIVATE ${PROJECT_SOURCE_DIR}/test/include)
+target_include_directories(vda5050++_test
+  PRIVATE
+  ${PROJECT_SOURCE_DIR}/test/include
+  ${PROJECT_SOURCE_DIR}/include/private
+)
 
 # Let CTest discover the Catch2 test cases
 catch_discover_tests(vda5050++_test)

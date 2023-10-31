@@ -1,11 +1,14 @@
 // Copyright Open Logistics Foundation
-// 
+//
 // Licensed under the Open Logistics Foundation License 1.3.
 // For details on the licensing terms, see the LICENSE file.
 // SPDX-License-Identifier: OLFL-1.3
-// 
+//
+//
 
 #include "vda5050++/core/common/math/geometry.h"
+
+#include <fmt/format.h>
 
 #include <catch2/catch.hpp>
 
@@ -117,6 +120,36 @@ TEST_CASE("common::math::circleEnclosureOf", "[common][math][geometry]") {
         REQUIRE_FALSE(math::circleEnclosureOf(a, e));
         REQUIRE_FALSE(math::circleEnclosureOf(a, g));
         REQUIRE_FALSE(math::circleEnclosureOf(a, h));
+      }
+    }
+  }
+}
+
+TEST_CASE("common::math::angleDifference", "[common][math][geometry]") {
+  struct TestData {
+    double in1;
+    double in2;
+    double res;
+  };
+
+  std::array test_data = {
+      TestData{0, 0, 0},
+      TestData{0, M_PI, M_PI},
+      TestData{M_PI, 0, M_PI},
+      TestData{M_PI, M_PI / 2, M_PI / 2},
+      TestData{M_PI / 2, M_PI, M_PI / 2},
+      TestData{-M_PI, M_PI, 0},
+      TestData{M_PI, -M_PI, 0},
+      TestData{-M_PI / 2, M_PI / 2, M_PI},
+      TestData{M_PI / 2, -M_PI / 2, M_PI},
+  };
+
+  WHEN("Using fixed tests") {
+    for (auto &[in1, in2, res] : test_data) {
+      THEN(fmt::format("angleDifference({}, {}) returns close to {}", in1, in2, res)) {
+        auto d = vda5050pp::core::common::math::angleDifference(in1, in2) - res;
+        REQUIRE(d < 1e-8);
+        REQUIRE(d > -1e-8);
       }
     }
   }

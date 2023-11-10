@@ -1,3 +1,10 @@
+# Copyright Open Logistics Foundation
+# 
+# Licensed under the Open Logistics Foundation License 1.3.
+# For details on the licensing terms, see the LICENSE file.
+# SPDX-License-Identifier: OLFL-1.3
+# 
+
 find_package(Threads REQUIRED)
 
 # include vda5050_message_structs ##################################################################

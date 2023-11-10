@@ -1,3 +1,10 @@
+# Copyright Open Logistics Foundation
+# 
+# Licensed under the Open Logistics Foundation License 1.3.
+# For details on the licensing terms, see the LICENSE file.
+# SPDX-License-Identifier: OLFL-1.3
+# 
+
 option(LIBVDA5050PP_BUILD_STATIC "libVDA5050++: build static library (instead of dynamic)" OFF)
 
 set(LIBVDA5050PP_SOURCES

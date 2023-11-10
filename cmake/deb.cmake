@@ -1,3 +1,10 @@
+# Copyright Open Logistics Foundation
+# 
+# Licensed under the Open Logistics Foundation License 1.3.
+# For details on the licensing terms, see the LICENSE file.
+# SPDX-License-Identifier: OLFL-1.3
+# 
+
 message(STATUS "Generating libvda5050++ DEB target.")
 message(WARNING "The DEB package currently doesn't include licenses. NOT SUITABLE FOR DISTRIBUTION.")
 

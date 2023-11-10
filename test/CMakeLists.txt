@@ -1,3 +1,10 @@
+# Copyright Open Logistics Foundation
+# 
+# Licensed under the Open Logistics Foundation License 1.3.
+# For details on the licensing terms, see the LICENSE file.
+# SPDX-License-Identifier: OLFL-1.3
+# 
+
 find_package(Threads REQUIRED)
 
 set(LIBVDA5050PP_CATCH2_VERSION "2.13.10" CACHE STRING "Overwrite catch2 version")

@@ -18,7 +18,6 @@ RUN apt update -y && apt install -y \
   cmake \
   doxygen \
   git \
-  libfmt-dev \
   libpaho-mqtt-dev \
   libpaho-mqttpp-dev \
   libspdlog-dev \

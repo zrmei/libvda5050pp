@@ -19,7 +19,6 @@ RUN apt update -y && apt install -y \
   cmake-curses-gui \
   doxygen \
   git \
-  libfmt-dev \
   libpaho-mqtt-dev \
   libpaho-mqttpp-dev \
   libspdlog-dev \

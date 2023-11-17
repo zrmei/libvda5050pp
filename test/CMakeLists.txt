@@ -77,7 +77,6 @@ target_link_libraries(vda5050++_test
   Catch2::Catch2
   vda5050++
   Threads::Threads
-  fmt::fmt
   spdlog::spdlog
   eventpp::eventpp
   $<BUILD_INTERFACE:tomlplusplus::tomlplusplus>

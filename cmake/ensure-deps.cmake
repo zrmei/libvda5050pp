@@ -50,27 +50,6 @@ endif()
 
 # ##################################################################################################
 
-# include fmt ######################################################################################
-set(LIBVDA5050PP_FMT_VERSION "8.1.1" CACHE STRING "Overwrite fmt version")
-find_package(fmt ${LIBVDA5050PP_FMT_VERSION} QUIET)
-
-if(fmt_FOUND)
-  message(STATUS "Found fmt installation.")
-else()
-  set(fmt_URL "https://github.com/fmtlib/fmt.git"
-    CACHE STRING "Overwrite the fmt repo URL")
-  cpmaddpackage(NAME fmt
-    GIT_REPOSITORY ${fmt_URL}
-    GIT_TAG ${LIBVDA5050PP_FMT_VERSION}
-    EXCLUDE_FROM_ALL YES
-    OPTIONS "FMT_INSTALL ON"
-  )
-  set_property(TARGET fmt PROPERTY COMPILE_FLAGS "-fpic")
-  set(fmt_FOUND ON CACHE BOOL "")
-endif()
-
-# ##################################################################################################
-
 # include spdlog ###################################################################################
 set(LIBVDA5050PP_SPDLOG_VERSION "1.10.0" CACHE STRING "Overwrite spdlog version")
 find_package(spdlog ${LIBVDA5050PP_SPDLOG_VERSION} QUIET)
@@ -84,7 +63,7 @@ else()
     GIT_REPOSITORY ${spdlog_URL}
     GIT_TAG "v${LIBVDA5050PP_SPDLOG_VERSION}"
     EXCLUDE_FROM_ALL YES
-    OPTIONS "SPDLOG_FMT_EXTERNAL On" "SPDLOG_INSTALL On"
+    OPTIONS "SPDLOG_FMT_EXTERNAL_HO OFF" "SPDLOG_INSTALL On"
   )
   set_property(TARGET spdlog PROPERTY COMPILE_FLAGS "-fpic")
   export(EXPORT spdlog

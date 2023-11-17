@@ -19,11 +19,11 @@ TEST_CASE("core::factsheet::gather", "[core][factsheet]") {
   cfg.refGlobalConfig().setLogLevel(vda5050pp::config::LogLevel::k_debug);
 
   // Set arbitrary non-defaults
-  cfg.refAgvDescription().agv_geometry.envelopes2d = {{}};
-  cfg.refAgvDescription().agv_geometry.envelopes3d = {{}};
-  cfg.refAgvDescription().agv_geometry.wheelDefinitions = {{}};
+  cfg.refAgvDescription().agv_geometry.envelopes2d = std::vector<vda5050::Envelope2d>();
+  cfg.refAgvDescription().agv_geometry.envelopes3d = std::vector<vda5050::Envelope3d>();
+  cfg.refAgvDescription().agv_geometry.wheelDefinitions = std::vector<vda5050::WheelDefinition>();
   cfg.refAgvDescription().load_specification.loadPositions = {"a", "b", "c"};
-  cfg.refAgvDescription().load_specification.loadSets = {{}};
+  cfg.refAgvDescription().load_specification.loadSets = std::vector<vda5050::LoadSet>();
   cfg.refAgvDescription().localization_parameters.description = "desc";
   cfg.refAgvDescription().localization_parameters.type = "type";
   cfg.refAgvDescription().physical_parameters.accelerationMax = 1.0;

@@ -110,7 +110,6 @@ Clean install scheme:
 | `LIBVDA5050PP_USE_GLIBCXX_DEBUG`                 | Compile with **public** `-D_GLIBCXX_DEBUG` flag                             |
 | `LIBVDA5050PP_CATCH2_VERSION`                    | Overwrite the Catch2 Version                                                |
 | `LIBVDA5050PP_EVENTPP_VERSION`                   | Overwrite the Eventpp Version                                               |
-| `LIBVDA5050PP_FMT_VERSION`                       | Overwrite the FMT Version                                                   |
 | `LIBVDA5050PP_NLOHMANN_JSON_VERSION`             | Overwrite the nlohmann_json Version                                         |
 | `LIBVDA5050PP_SPDLOG_VERSION`                    | Overwrite the spdlog Version                                                |
 | `LIBVDA5050PP_TOMLPLUSPLUS_VERSION`              | Overwrite the TOMLPLUSPLUS Version                                          |

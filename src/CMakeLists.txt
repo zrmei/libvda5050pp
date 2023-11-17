@@ -105,7 +105,6 @@ target_link_libraries(vda5050++
   PahoMqttCpp::paho-mqttpp3
 
   # static
-  $<BUILD_INTERFACE:fmt::fmt>
   $<BUILD_INTERFACE:spdlog::spdlog>
   $<BUILD_INTERFACE:eventpp::eventpp>
   $<BUILD_INTERFACE:tomlplusplus::tomlplusplus>

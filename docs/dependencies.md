@@ -75,15 +75,9 @@ Install options:
 
 Can be found in this [Repository](https://github.com/fmtlib/fmt), published under a [Custom License](https://github.com/fmtlib/fmt/blob/master/LICENSE).
 
-| CPM Version | APT Version |
-| ----------- | ----------- |
-| `8.1.1`     | `8.1.1`     |
-
 Install options:
 
-- Automatic CPM include
-- CMake install from source
-- `apt install libfmt-dev`
+- Automatic include as a dependency of spdlog
 
 # spdlog (automatic)
 

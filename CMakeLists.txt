@@ -56,7 +56,9 @@ endfunction()
 set_compiler_flag("-Wall")
 set_compiler_flag("-Wextra")
 set_compiler_flag("-Wpedantic")
-set_compiler_flag("-Wshadow")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    set_compiler_flag("-Wshadow") # Only use -Wshadow for clang, because some deps don't support -isystem
+endif()
 set_compiler_flag("-Wconversion")
 set_compiler_flag("-Werror")
 

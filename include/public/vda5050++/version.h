@@ -16,17 +16,20 @@
 
 namespace vda5050pp::version {
 
-extern const std::string_view k_library_version;
+///
+///\brief Get the current library version
+///
+std::string_view getLibraryVersion();
 
 ///
 ///\brief The current vda5050 version number
 ///
-extern const std::string_view k_current;
+std::string_view getCurrentVersion();
 
 ///
 ///\brief All compatible vda5050 version numbers
 ///
-extern const std::set<std::string_view, std::less<>> k_compatible;
+const std::set<std::string_view, std::less<>> &getCompatible();
 
 }  // namespace vda5050pp::version
 

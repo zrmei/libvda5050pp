@@ -6,7 +6,7 @@
 //
 #include "vda5050++/core/order/navigation_task.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include "vda5050++/core/common/exception.h"
 #include "vda5050++/core/instance.h"

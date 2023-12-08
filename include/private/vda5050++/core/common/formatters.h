@@ -8,7 +8,7 @@
 #ifndef VDA5050_2B_2B_CORE_COMMON_FORMATTERS_H_
 #define VDA5050_2B_2B_CORE_COMMON_FORMATTERS_H_
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 #include <vda5050/Action.h>
 #include <vda5050/Error.h>
 

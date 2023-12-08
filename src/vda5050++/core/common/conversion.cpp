@@ -10,8 +10,8 @@
 
 #include "vda5050++/core/common/conversion.h"
 
-#include <fmt/format.h>
-#include <fmt/ranges.h>
+#include <spdlog/fmt/fmt.h>
+#include <spdlog/fmt/ranges.h>
 
 #include <algorithm>
 #include <list>

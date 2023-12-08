@@ -29,7 +29,7 @@ struct EventIterState {
 };
 
 class EventIter {
-protected:
+public:
   enum class IterState {
     k_handling_initial,
     k_handling_pre_node_action,
@@ -45,6 +45,7 @@ protected:
     k_done,
   };
 
+protected:
   IterState &getIterState();
   NodeIter &getNodeIter();
   NodeIter &getNodeEnd();

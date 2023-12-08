@@ -6,8 +6,8 @@
 //
 #include "vda5050++/core/checks/action.h"
 
-#include <fmt/format.h>
-#include <fmt/ranges.h>
+#include <spdlog/fmt/fmt.h>
+#include <spdlog/fmt/ranges.h>
 
 #include "vda5050++/core/common/container.h"
 #include "vda5050++/core/common/exception.h"

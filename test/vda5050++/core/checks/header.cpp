@@ -24,7 +24,7 @@ TEST_CASE("core::checks::checkHeader", "[core][checks]") {
     vda5050::HeaderVDA5050 header;
     header.manufacturer = "invalid";
     header.serialNumber = "serial_number";
-    header.version = vda5050pp::version::k_current;
+    header.version = vda5050pp::version::getCurrentVersion();
 
     THEN("The check fails") { REQUIRE_FALSE(vda5050pp::core::checks::checkHeader(header).empty()); }
   }
@@ -33,7 +33,7 @@ TEST_CASE("core::checks::checkHeader", "[core][checks]") {
     vda5050::HeaderVDA5050 header;
     header.manufacturer = "manufacturer";
     header.serialNumber = "invalid";
-    header.version = vda5050pp::version::k_current;
+    header.version = vda5050pp::version::getCurrentVersion();
 
     THEN("The check fails") { REQUIRE_FALSE(vda5050pp::core::checks::checkHeader(header).empty()); }
   }
@@ -42,7 +42,7 @@ TEST_CASE("core::checks::checkHeader", "[core][checks]") {
     vda5050::HeaderVDA5050 header;
     header.manufacturer = "manufacturer";
     header.serialNumber = "serial_number";
-    header.version = vda5050pp::version::k_current;
+    header.version = vda5050pp::version::getCurrentVersion();
 
     THEN("The check succeeds") { REQUIRE(vda5050pp::core::checks::checkHeader(header).empty()); }
   }
@@ -52,7 +52,7 @@ TEST_CASE("core::checks::checkHeader", "[core][checks]") {
     header.manufacturer = "manufacturer";
     header.serialNumber = "serial_number";
 
-    for (const auto &compat : vda5050pp::version::k_compatible) {
+    for (const auto &compat : vda5050pp::version::getCompatible()) {
       header.version = compat;
       THEN("The check succeeds") { REQUIRE(vda5050pp::core::checks::checkHeader(header).empty()); }
     }

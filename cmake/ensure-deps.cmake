@@ -52,25 +52,21 @@ endif()
 
 # include spdlog ###################################################################################
 set(LIBVDA5050PP_SPDLOG_VERSION "1.10.0" CACHE STRING "Overwrite spdlog version")
-find_package(spdlog ${LIBVDA5050PP_SPDLOG_VERSION} QUIET)
 
-if(spdlog_FOUND)
-  message(STATUS "Found spdlog installation.")
-else()
-  set(spdlog_URL "https://github.com/gabime/spdlog.git"
-    CACHE STRING "Overwrite the spdlog repo URL")
-  cpmaddpackage(NAME spdlog
-    GIT_REPOSITORY ${spdlog_URL}
-    GIT_TAG "v${LIBVDA5050PP_SPDLOG_VERSION}"
-    EXCLUDE_FROM_ALL YES
-    OPTIONS "SPDLOG_FMT_EXTERNAL_HO OFF" "SPDLOG_INSTALL On"
-  )
-  set_property(TARGET spdlog PROPERTY COMPILE_FLAGS "-fpic")
-  export(EXPORT spdlog
-    FILE "${spdlog_BINARY_DIR}/spdlogTargets.cmake"
-  )
-  set(spdlog_FOUND ON CACHE BOOL "")
-endif()
+# Force git version
+set(spdlog_URL "https://github.com/gabime/spdlog.git"
+  CACHE STRING "Overwrite the spdlog repo URL")
+cpmaddpackage(NAME spdlog
+  GIT_REPOSITORY ${spdlog_URL}
+  GIT_TAG "v${LIBVDA5050PP_SPDLOG_VERSION}"
+  EXCLUDE_FROM_ALL YES
+  OPTIONS "SPDLOG_FMT_EXTERNAL_HO OFF" "SPDLOG_INSTALL On"
+)
+set_property(TARGET spdlog PROPERTY COMPILE_FLAGS "-fpic")
+export(EXPORT spdlog
+  FILE "${spdlog_BINARY_DIR}/spdlogTargets.cmake"
+)
+set(spdlog_FOUND ON CACHE BOOL "")
 
 # ##################################################################################################
 

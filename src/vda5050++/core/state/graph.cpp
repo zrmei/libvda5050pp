@@ -6,7 +6,7 @@
 //
 #include "vda5050++/core/state/graph.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include "vda5050++/core/common/exception.h"
 

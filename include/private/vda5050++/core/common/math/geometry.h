@@ -11,6 +11,7 @@
 #ifndef CORE_COMMON_MATH_GEOMETRY_H_
 #define CORE_COMMON_MATH_GEOMETRY_H_
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 
 namespace vda5050pp::core::common::math {

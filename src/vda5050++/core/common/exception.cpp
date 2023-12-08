@@ -7,7 +7,9 @@
 
 #include "vda5050++/core/common/exception.h"
 
+#if LIBVDA5050PP_HAS_BACKTRACE
 #include <execinfo.h>
+#endif
 
 #include "vda5050++/core/common/type_traits.h"
 
@@ -27,6 +29,7 @@ inline vda5050pp::VDA5050PPErrorContext::StackEntry fromBacktrace(
 
 std::vector<vda5050pp::VDA5050PPErrorContext::StackEntry> vda5050pp::core::common::stacktrace(
     size_t trace_size) {
+#if LIBVDA5050PP_HAS_BACKTRACE
   auto trace = static_cast<void **>(malloc(trace_size * sizeof(void *)));
   trace_size = size_t(backtrace(trace, int(trace_size)));
   auto symbols = backtrace_symbols(trace, int(trace_size));
@@ -41,4 +44,8 @@ std::vector<vda5050pp::VDA5050PPErrorContext::StackEntry> vda5050pp::core::commo
   free(trace);
 
   return bt;
+#else
+  (void)trace_size;
+  return {};
+#endif
 }

@@ -7,7 +7,7 @@
 
 #include "vda5050++/core/events/event_control_blocks.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include "vda5050++/core/common/exception.h"
 

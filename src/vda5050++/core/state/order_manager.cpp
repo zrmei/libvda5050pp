@@ -7,7 +7,7 @@
 
 #include "vda5050++/core/state/order_manager.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include "vda5050++/core/common/exception.h"
 #include "vda5050++/core/logger.h"

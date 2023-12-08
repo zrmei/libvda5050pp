@@ -8,7 +8,7 @@
 #ifndef PRIVATE_VDA5050_2B_2B_CORE_CONFIG_H_
 #define PRIVATE_VDA5050_2B_2B_CORE_CONFIG_H_
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 #include <toml++/toml.h>
 
 #include "vda5050++/config.h"

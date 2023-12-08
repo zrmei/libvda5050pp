@@ -5,7 +5,7 @@
 // SPDX-License-Identifier: OLFL-1.3
 //
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <catch2/catch.hpp>
 

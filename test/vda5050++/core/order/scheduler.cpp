@@ -6,7 +6,7 @@
 //
 #include "vda5050++/core/order/scheduler.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <catch2/catch.hpp>
 

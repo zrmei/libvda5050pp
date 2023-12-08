@@ -9,33 +9,21 @@
 #define TEST_INCLUDE_TEST_EXCEPTION_H_
 
 #include <exception>
+#include <stdexcept>
 #include <string>
-#include <type_traits>
-#include <variant>
 
 namespace test::exception {
 
 class VDA5050TestException : public std::logic_error {
 private:
-  std::variant<std::string, const char *> msg_;
+  std::string msg_;
 
 public:
   template <typename StringT>
-  VDA5050TestException(StringT &&msg)
-      : msg_(std::forward<StringT>(msg)), std::logic_error(what()) {}
+  VDA5050TestException(const StringT &msg) : std::logic_error(""), msg_(msg) {}
 
   const char *what() const noexcept(true) override {
-    return std::visit(
-        [](auto &&str) {
-          using T = std::decay_t<decltype(str)>;
-
-          if constexpr (std::is_same_v<T, std::string>) {
-            return str.c_str();
-          } else {
-            return str;
-          }
-        },
-        this->msg_);
+    return this->msg_.c_str();
   }
 };
 

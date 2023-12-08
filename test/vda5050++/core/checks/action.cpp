@@ -6,7 +6,7 @@
 //
 #include "vda5050++/core/checks/action.h"
 
-#include <fmt/printf.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <catch2/catch.hpp>
 

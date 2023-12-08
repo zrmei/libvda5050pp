@@ -91,7 +91,7 @@ TEST_CASE("core::validation::ValidationEventHandler::handleValidateOrder", "[cor
   order->zoneSetId = "test_zone_set";
   order->orderId = "test";
   order->orderUpdateId = 0;
-  order->header.version = vda5050pp::version::k_current;
+  order->header.version = vda5050pp::version::getCurrentVersion();
   auto evt_order = std::make_shared<vda5050pp::core::events::ValidateOrderEvent>();
   evt_order->order = order;
 

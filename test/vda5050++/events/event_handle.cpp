@@ -7,7 +7,7 @@
 
 #include "vda5050++/events/event_handle.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <catch2/catch.hpp>
 

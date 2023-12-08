@@ -6,7 +6,7 @@
 //
 #include "vda5050++/core/messages/message_event_handler.h"
 
-#include <fmt/ranges.h>
+#include <spdlog/fmt/ranges.h>
 
 #include <chrono>
 

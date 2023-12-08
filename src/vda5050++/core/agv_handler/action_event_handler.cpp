@@ -7,7 +7,7 @@
 
 #include "vda5050++/core/agv_handler/action_event_handler.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <functional>
 

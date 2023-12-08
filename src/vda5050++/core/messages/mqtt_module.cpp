@@ -6,7 +6,7 @@
 //
 #include "vda5050++/core/messages/mqtt_module.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 #include <vda5050/Connection.h>
 #include <vda5050/InstantActions.h>
 #include <vda5050/Order.h>
@@ -25,28 +25,28 @@ void MqttModule::fillHeaderConnection(vda5050::HeaderVDA5050 &header) {
   header.headerId = this->connection_seq_id_++;
   header.manufacturer = this->manufacturer_;
   header.serialNumber = this->serial_number_;
-  header.version = version::k_current;
+  header.version = version::getCurrentVersion();
   header.timestamp = std::chrono::system_clock::now();
 }
 void MqttModule::fillHeaderFactsheet(vda5050::HeaderVDA5050 &header) {
   header.headerId = this->factsheet_seq_id_++;
   header.manufacturer = this->manufacturer_;
   header.serialNumber = this->serial_number_;
-  header.version = version::k_current;
+  header.version = version::getCurrentVersion();
   header.timestamp = std::chrono::system_clock::now();
 }
 void MqttModule::fillHeaderState(vda5050::HeaderVDA5050 &header) {
   header.headerId = this->state_seq_id_++;
   header.manufacturer = this->manufacturer_;
   header.serialNumber = this->serial_number_;
-  header.version = version::k_current;
+  header.version = version::getCurrentVersion();
   header.timestamp = std::chrono::system_clock::now();
 }
 void MqttModule::fillHeaderVisualization(vda5050::HeaderVDA5050 &header) {
   header.headerId = this->visualization_seq_id_++;
   header.manufacturer = this->manufacturer_;
   header.serialNumber = this->serial_number_;
-  header.version = version::k_current;
+  header.version = version::getCurrentVersion();
   header.timestamp = std::chrono::system_clock::now();
 }
 

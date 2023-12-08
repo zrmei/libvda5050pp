@@ -20,7 +20,6 @@ RUN apt update -y && apt install -y \
   git \
   libpaho-mqtt-dev \
   libpaho-mqttpp-dev \
-  libspdlog-dev \
   libssl-dev \
   ninja-build \
   nlohmann-json3-dev \

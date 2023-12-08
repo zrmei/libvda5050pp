@@ -9,7 +9,7 @@
 //
 #include "vda5050++/core/agv_handler/query_event_handler.h"
 
-#include <fmt/ranges.h>
+#include <spdlog/fmt/ranges.h>
 
 #include "vda5050++/config/query_event_handler_subconfig.h"
 #include "vda5050++/core/common/container.h"

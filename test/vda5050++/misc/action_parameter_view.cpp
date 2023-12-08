@@ -31,8 +31,10 @@ TEST_CASE("misc::ActionParameterValueView", "[misc]") {
   SECTION("Integer views") {
     int64_t value1 = 123;
     int64_t value2 = -456;
-    vda5050pp::misc::ActionParameterValueView view1(std::to_string(value1));
-    vda5050pp::misc::ActionParameterValueView view2(std::to_string(value2));
+    auto s1 = std::to_string(value1);
+    auto s2 = std::to_string(value2);
+    vda5050pp::misc::ActionParameterValueView view1(s1);
+    vda5050pp::misc::ActionParameterValueView view2(s2);
 
     REQUIRE(view1.getInt() == value1);
     REQUIRE(view2.getInt() == value2);
@@ -77,8 +79,10 @@ TEST_CASE("misc::ActionParameterValueView", "[misc]") {
   SECTION("Float views") {
     double value1 = 64.5;
     double value2 = -128.25;
-    vda5050pp::misc::ActionParameterValueView view1(std::to_string(value1));
-    vda5050pp::misc::ActionParameterValueView view2(std::to_string(value2));
+    auto s1 = std::to_string(value1);
+    auto s2 = std::to_string(value2);
+    vda5050pp::misc::ActionParameterValueView view1(s1);
+    vda5050pp::misc::ActionParameterValueView view2(s2);
 
     REQUIRE(view1.getFloat() == value1);
     REQUIRE(view2.getFloat() == value2);

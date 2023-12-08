@@ -8,7 +8,7 @@
 #ifndef VDA5050_2B_2B_CORE_ORDER_ACTION_TASK_H_
 #define VDA5050_2B_2B_CORE_ORDER_ACTION_TASK_H_
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 #include <vda5050/Action.h>
 
 #include <memory>

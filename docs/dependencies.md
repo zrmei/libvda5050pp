@@ -85,13 +85,12 @@ Can be found in this [Repository](https://github.com/gabime/spdlog), published u
 
 | CPM Version | APT Version |
 | ----------- | ----------- |
-| `1.10.0`    | `1.9.2`     |
+| `1.10.0`    | -           |
 
 Install options:
 
 - Automatic CPM include
 - CMake install from source
-- `apt install libspdlog-dev`
 
 # Tomlplusplus (automatic)
 

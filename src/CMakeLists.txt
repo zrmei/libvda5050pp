@@ -119,16 +119,10 @@ target_include_directories(vda5050++
 )
 target_compile_features(vda5050++ PUBLIC cxx_std_17)
 target_compile_options(vda5050++ PRIVATE ${LIBVDA5050PP_CMAKE_CXX_FLAGS})
-target_compile_definitions(vda5050++ PRIVATE LIBVDA5050PP_VERSION=${PROJECT_VERSION})
-target_link_options(vda5050++ PUBLIC "-Wl,--export-dynamic")
-
-# # Check platform deps #########################################################
-include(CheckCXXSymbolExists)
-check_cxx_symbol_exists(localtime_r "ctime" HAVE_CTIME_LOCALTIME_R)
-
-if(${HAVE_CTIME_LOCALTIME_R})
-  target_compile_definitions(vda5050++ PRIVATE HAVE_CTIME_LOCALTIME_R)
-endif()
+target_compile_definitions(vda5050++ PRIVATE
+  LIBVDA5050PP_VERSION=${PROJECT_VERSION}
+  ${LIBVDA5050PP_PLATFORM_DEFINITIONS}
+)
 
 # ###############################################################################
 

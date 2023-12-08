@@ -6,7 +6,7 @@
 //
 #include "vda5050++/config/types.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include "vda5050++/core/common/exception.h"
 

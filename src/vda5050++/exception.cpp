@@ -6,7 +6,7 @@
 //
 #include "vda5050++/exception.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <sstream>
 

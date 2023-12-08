@@ -6,7 +6,7 @@
 //
 #include "vda5050++/core/interpreter/control_instant_actions.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <set>
 

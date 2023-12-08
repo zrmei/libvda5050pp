@@ -12,8 +12,8 @@
 #include "vda5050++/core/instance.h"
 #include "vda5050++/exception.h"
 
-constexpr std::array<std::function<void(vda5050pp::core::order::NavigationTask &)>, 0>
-    k_no_assertions;
+// MSVC cannot handle constexpr arrays.
+static std::array<std::function<void(vda5050pp::core::order::NavigationTask &)>, 0> k_no_assertions;
 
 template <typename Container>
 void runAssertions(vda5050pp::core::order::NavigationTask &task, const Container &assertions) {

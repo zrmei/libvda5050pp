@@ -6,7 +6,7 @@
 //
 #include "vda5050++/misc/action_parameter_view.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <algorithm>
 #include <set>

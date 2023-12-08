@@ -175,7 +175,10 @@ TEST_CASE("core::state::Graph behaviour", "[core][state]") {
   vda5050pp::core::state::Graph g2({gn12, gn22, gn32, ge12, ge22, ge32});
   vda5050pp::core::state::Graph g3({gn32, ge22, gn22});
 
-  auto bounds = [](auto a, auto b) -> decltype(g1.bounds()) { return {a, b}; };
+  auto bounds = [](vda5050pp::core::state::GraphElement::SequenceId a,
+                   vda5050pp::core::state::GraphElement::SequenceId b) -> decltype(g1.bounds()) {
+    return {a, b};
+  };
 
   WHEN("An empty graph is constructed") {
     THEN("An exception is thrown") {

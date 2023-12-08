@@ -7,7 +7,7 @@
 
 #include "vda5050++/sinks/status_sink.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <catch2/catch.hpp>
 
@@ -33,7 +33,7 @@ template <typename Event> inline void testSyncEvent(const std::function<void()> 
     bool called = false;
     sub.subscribe([&called](std::shared_ptr<Event> evt) {
       auto tkn = evt->acquireResultToken();
-      tkn.setValue((typename Event::result_type){});
+      tkn.setValue(typename Event::result_type{});
       called = true;
     });
     call_sink();

@@ -6,9 +6,11 @@
 //
 //
 
+#define _USE_MATH_DEFINES
 #include "vda5050++/core/agv_handler/functional.h"
 
 #include <catch2/catch.hpp>
+#include <cmath>
 
 TEST_CASE("core::agv_handler::isOnNode", "[core][agv_handler]") {
   vda5050::NodePosition np1;

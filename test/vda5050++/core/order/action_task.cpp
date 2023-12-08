@@ -6,7 +6,7 @@
 //
 #include "vda5050++/core/order/action_task.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <array>
 #include <catch2/catch.hpp>
@@ -15,7 +15,8 @@
 #include "test/data.h"
 #include "vda5050++/core/instance.h"
 
-constexpr std::array<std::function<void(vda5050pp::core::order::ActionTask &)>, 0> k_no_assertions;
+// MSVC cannot handle constexpr arrays.
+static std::array<std::function<void(vda5050pp::core::order::ActionTask &)>, 0> k_no_assertions;
 
 template <typename Container>
 void runAssertions(vda5050pp::core::order::ActionTask &task, const Container &assertions) {

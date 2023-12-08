@@ -6,7 +6,7 @@
 //
 #include "vda5050++/config.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 #include <toml++/toml.h>
 
 #include <fstream>
@@ -210,7 +210,7 @@ void Config::save(const std::filesystem::path &toml_file) const {
     ofs << contents;
   } catch (const std::ios_base::failure &) {
     // Format errno, set by ofs
-    std::system_error sys_error{errno, std::iostream_category(), toml_file.c_str()};
+    std::system_error sys_error{errno, std::iostream_category(), toml_file.string()};
     throw vda5050pp::VDA5050PPTOMLError(MK_EX_CONTEXT(sys_error.what()));
   }
 }

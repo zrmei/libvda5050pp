@@ -6,8 +6,8 @@
 //
 #include "vda5050++/core/checks/header.h"
 
-#include <fmt/format.h>
-#include <fmt/ranges.h>
+#include <spdlog/fmt/fmt.h>
+#include <spdlog/fmt/ranges.h>
 
 #include <string>
 
@@ -42,7 +42,7 @@ std::list<vda5050::Error> vda5050pp::core::checks::checkHeader(
     errors.push_back(std::move(err));
   }
 
-  if (auto &c = vda5050pp::version::k_compatible; c.find(header.version) == c.end()) {
+  if (auto &c = vda5050pp::version::getCompatible(); c.find(header.version) == c.end()) {
     vda5050::Error err;
     err.errorType = "InvalidHeader";
     err.errorDescription =

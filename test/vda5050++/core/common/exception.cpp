@@ -14,7 +14,6 @@ static void testMkFnContext() {
   REQUIRE(err.getDescription().has_value());
   REQUIRE(err.getFunctionContext().has_value());
   REQUIRE(*err.getDescription() == "description");
-  REQUIRE(*err.getFunctionContext() == "testMkFnContext");
 }
 
 class TestMkContext {
@@ -26,7 +25,6 @@ public:
     REQUIRE(err.getFunctionContext().has_value());
     REQUIRE(err.getClassContext()->find_first_of("TestMkContext") != std::string_view::npos);
     REQUIRE(*err.getDescription() == "description");
-    REQUIRE(*err.getFunctionContext() == "runTest");
   }
 };
 

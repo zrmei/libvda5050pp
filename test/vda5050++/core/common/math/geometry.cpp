@@ -8,8 +8,9 @@
 
 #include "vda5050++/core/common/math/geometry.h"
 
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 
+#include <array>
 #include <catch2/catch.hpp>
 
 TEST_CASE("common::math::norm", "[common][math][geometry]") {

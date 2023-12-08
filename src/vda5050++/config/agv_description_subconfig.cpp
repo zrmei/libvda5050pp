@@ -70,7 +70,7 @@ inline Target fromJSONTable(toml::node_view<const toml::node> node,
                                                path};
     } catch (const std::ios_base::failure &) {
       // Format errno, set by ofs
-      std::system_error sys_error{errno, std::iostream_category(), path.c_str()};
+      std::system_error sys_error{errno, std::iostream_category(), path.string()};
       throw vda5050pp::VDA5050PPInvalidConfiguration(
           MK_FN_EX_CONTEXT(fmt::format("Could not load {} json file: {}", name, sys_error.what())));
     } catch (const vda5050::json::exception &e) {
@@ -97,15 +97,15 @@ inline toml::table toJSONTable(const Target &target,
       ofs << contents;
     } catch (const std::ios_base::failure &) {
       // Format errno, set by ofs
-      std::system_error sys_error{errno, std::iostream_category(), file->json_file.c_str()};
+      std::system_error sys_error{errno, std::iostream_category(), file->json_file.string()};
       throw vda5050pp::VDA5050PPTOMLError(
           MK_FN_EX_CONTEXT(fmt::format("Could not write {} file: {}", name, sys_error.what())));
     }
     table.insert("json_file_overwrite", file->overwrite);
-    table.insert("json_file", file->json_file.c_str());
+    table.insert("json_file", file->json_file.string());
   } else if (file && !file->overwrite) {
     table.insert("json_file_overwrite", file->overwrite);
-    table.insert("json_file", file->json_file.c_str());
+    table.insert("json_file", file->json_file.string());
   } else {
     table.insert("json", vda5050::json(target).dump(2));
   }

@@ -110,6 +110,9 @@ endif()
 # include dependencies
 include(cmake/ensure-deps.cmake)
 
+# check platform 
+include(cmake/platform.cmake)
+
 # include libvda5050++ source code
 add_subdirectory(src)
 

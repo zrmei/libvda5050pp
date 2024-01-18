@@ -110,7 +110,7 @@ Can be found in this [Repository](https://github.com/nlohmann/json), published u
 
 | CPM Version | APT Version |
 | ----------- | ----------- |
-| `3.11.2`    | `3.10.5`    |
+| `3.11.3`    | `3.10.5`    |
 
 Install options:
 

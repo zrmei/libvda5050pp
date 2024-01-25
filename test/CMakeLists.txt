@@ -70,6 +70,8 @@ add_executable(vda5050++_test
   ${PROJECT_SOURCE_DIR}/test/vda5050++/handle.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/handler/base_navigation_handler.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/misc/action_parameter_view.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/observer/message_observer.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/observer/order_observer.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/sinks/navigation_sink.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/sinks/status_sink.cpp
 )

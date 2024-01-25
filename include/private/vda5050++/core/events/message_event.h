@@ -11,6 +11,8 @@
 #include <memory>
 
 #include "vda5050++/events/event_type.h"
+#include "vda5050++/misc/connection_status.h"
+#include "vda5050++/misc/message_error.h"
 #include "vda5050/AgvFactsheet.h"
 #include "vda5050/InstantActions.h"
 #include "vda5050/Order.h"
@@ -72,23 +74,12 @@ struct SendVisualizationMessageEvent
 
 struct ConnectionChangedEvent
     : public vda5050pp::events::EventId<MessageEvent, MessageEventType::k_connection_changed> {
-  enum class ConnectionStatus {
-    k_online,
-    k_offline,
-    k_timeout,
-  };
-
-  ConnectionStatus status;
+  vda5050pp::misc::ConnectionStatus status;
 };
 
 struct MessageErrorEvent
     : public vda5050pp::events::EventId<MessageEvent, MessageEventType::k_message_error> {
-  enum class ErrorType {
-    k_delivery,
-    k_json_deserialization,
-  };
-
-  ErrorType error_type;
+  vda5050pp::misc::MessageErrorType error_type;
   std::string description;
 };
 

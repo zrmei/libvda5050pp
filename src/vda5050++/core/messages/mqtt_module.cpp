@@ -108,7 +108,7 @@ void MqttModule::useMqttOptions(const vda5050pp::config::MqttOptions &opts) {
 
 void MqttModule::on_failure(const mqtt::token &tkn) {
   auto evt = std::make_shared<vda5050pp::core::events::MessageErrorEvent>();
-  evt->error_type = vda5050pp::core::events::MessageErrorEvent::ErrorType::k_delivery;
+  evt->error_type = vda5050pp::misc::MessageErrorType::k_delivery;
   evt->description = fmt::format("Could not deliver message (id={})", tkn.get_message_id());
 
   getMqttLogger()->warn(evt->description);
@@ -127,7 +127,7 @@ void MqttModule::connected(const std::string & /*cause*/) {
   getMqttLogger()->info("MqttModule: online");
   this->state_ = State::k_online;
   auto evt = std::make_shared<vda5050pp::core::events::ConnectionChangedEvent>();
-  evt->status = vda5050pp::core::events::ConnectionChangedEvent::ConnectionStatus::k_online;
+  evt->status = vda5050pp::misc::ConnectionStatus::k_online;
   vda5050pp::core::Instance::ref().getMessageEventManager().dispatch(evt);
 
   vda5050::Connection connection;
@@ -140,7 +140,7 @@ void MqttModule::connection_lost(const std::string &cause) {
   getMqttLogger()->warn("MqttModule: connection lost ({})", cause);
   if (this->state_ == State::k_online) {
     auto evt = std::make_shared<vda5050pp::core::events::ConnectionChangedEvent>();
-    evt->status = vda5050pp::core::events::ConnectionChangedEvent::ConnectionStatus::k_offline;
+    evt->status = vda5050pp::misc::ConnectionStatus::k_offline;
     vda5050pp::core::Instance::ref().getMessageEventManager().dispatch(evt);
   }
   this->state_ = State::k_offline;
@@ -169,8 +169,7 @@ void MqttModule::message_arrived(mqtt::const_message_ptr msg) {
     }
   } catch (const vda5050::json::exception &e) {
     auto error_event = std::make_shared<vda5050pp::core::events::MessageErrorEvent>();
-    error_event->error_type =
-        vda5050pp::core::events::MessageErrorEvent::ErrorType::k_json_deserialization;
+    error_event->error_type = vda5050pp::misc::MessageErrorType::k_json_deserialization;
     error_event->description = fmt::format(
         "MqttModule could not parse message on topic \"{}\" ({})", msg->get_topic(), e.what());
 
@@ -223,7 +222,7 @@ void MqttModule::disconnect() {
       this->mqtt_client_->disconnect();
       this->state_ = State::k_offline;
       auto evt = std::make_shared<vda5050pp::core::events::ConnectionChangedEvent>();
-      evt->status = vda5050pp::core::events::ConnectionChangedEvent::ConnectionStatus::k_offline;
+      evt->status = vda5050pp::misc::ConnectionStatus::k_offline;
       vda5050pp::core::Instance::ref().getMessageEventManager().dispatch(evt);
     } break;
     default:

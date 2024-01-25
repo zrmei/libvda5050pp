@@ -397,6 +397,67 @@ public:
 };
 ```
 
+# Observer
+
+The Observers in the [`vda5050pp::observer` namespace](doxygen/html/namespacevda5050pp_1_1observer.html) can be used
+to observe the internal library state, such as messages and the currently processed Order.
+
+## MessageObserver
+
+During it's lifetime, the [`vda5050pp::observer::MessageObserver`](doxygen/html/classvda5050pp_1_1observer_1_1MessageObserver.html)
+subscribes to all necessary events and tracks statistics about:
+
+- the number of valid received Orders
+- the number of valid received InstantActions
+- the number of sent State messages
+- the number of sent Visualization messages
+- the number of message errors (deserialization or delivery errors)
+
+Furthermore the user can add custom callbacks to observe these events directly.
+
+### Example
+
+```c++
+// Start observing message events
+vda5050pp::observers::MessageObserver observer;
+
+// Observe changes in the connection state
+observer.onConnectionChanged([](vda5050pp::misc::ConnectionStatus status) {
+  // ...
+});
+
+// ...
+
+observer.getErrors(); // Get the number of encountered message errors
+auto [type, description] = observer.getLastError().value(); // Inspect the latest error.
+```
+
+## OrderObserver
+
+During it's lifetime, the [`vda5050pp::observer::OrderObserver`](doxygen/html/classvda5050pp_1_1observer_1_1MessageObserver.html)
+subscribes to all necessary events and provides the current state of:
+
+- the high level order state (idle, active, paused, ...)
+- the state of each action
+- the logical position of the AGV (node_id, sequence_id)
+
+The user can provide custom callbacks to get notified on each change.
+
+### Example
+
+```c++
+// Start observing the order events
+vda5050pp::observer::OrderObserver observer;
+
+observer.onActionStatusChanged("action_id", [](vda5050::ActionStatus status){
+  // ...
+});
+
+// ...
+
+auto [last_node_id, seq_id] = observer.getLastNode().value(); // Get the logical AGV position
+```
+
 # Misc
 
 Overall the [`vda5050pp::misc` namespace](doxygen/html/namespacevda5050pp_1_1misc.html)

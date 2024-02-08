@@ -2,7 +2,8 @@
 
 The libVDA5050++ can be fully configured by the [`vda5050pp::Config`](doxygen/html/classvda5050pp_1_1Config.html).
 It contains a [global](#global-config) configuration, an [AGV description](#agv-description) and
-several [module configurations](#module-configuration). An example configuration file can
+several [module configurations](#module-configuration). There is also
+support for used defined config tables. An example configuration file can
 be found in `libvda5050++/examples/example_config.toml`.
 
 # Load/Save
@@ -214,4 +215,56 @@ The VisualizationTimer sub config contains the interval of visualization message
 
 # Custom Configuration
 
-Coming Soon.
+You can add your own configuration to the [`vda5050pp::Config`](doxygen/html/classvda5050pp_1_1Config.html)
+to load them from the same file. All user configurations are stored in the `[custom.*]` sub-table.
+There is currently a support for simple key-value configurations with `boolean`, `float`, `integer`
+and `string` values via the [`vda5050pp::config::KeyValueConfig`](doxygen/html/classvda5050pp_1_1config_1_1KeyValueConfig.html) class.
+
+If your configuration looks like this for example:
+```toml
+# ...
+[custom.my_service]
+my_service_address = "192.168.0.100"
+my_service_port = 8000
+# ...
+```
+
+You can read and write it like this:
+```c++
+auto my_configuration = std::make_shared<vda5050pp::config::KeyValueConfig>();
+my_configuration->addStringEntry("my_service_address",                              // key
+                                 true,                                              // required
+                                 "127.0.0.1",                                       // default
+                                 [](auto v) { return isMyServiceAddressValid(v); }  // validator
+);
+my_configuration->addIntegerEntry("my_service_port",                              // key
+                                  true,                                           // required
+                                  8080,                                           // default
+                                  [](auto v) { return isMyServicePortValid(v); }  // validator
+);
+
+vda5050pp::Config cfg;
+cfg.registerCustomConfig("my_service", my_configuration);
+cfg.load(std::filesystem::path("/path/to/config.toml")); // Will also load [custom.my_service]
+
+// Access loaded values
+cfg.lookupCustomConfigAs<vda5050pp::config::KeyValueConfig>("my_service")->getString("my_service_address");
+cfg.lookupCustomConfigAs<vda5050pp::config::KeyValueConfig>("my_service")->getInteger("my_service_port");
+```
+
+You can also nest your [`vda5050pp::config::KeyValueConfig`](doxygen/html/classvda5050pp_1_1config_1_1KeyValueConfig.html) objects:
+```c++
+auto my_sub_configuration = std::make_shared<vda5050pp::KeyValueConfig>();
+my_sub_configuration->addStringEntry("user", true, "admin");
+my_sub_configuration->addStringEntry("pass", true, "admin");
+
+my_configuration->addSubConfigEntry("auth", my_sub_configuration);
+
+cfg.load(std::filesystem::path("/path/to/config.toml")); // Will load [custom.my_service] and [custom.my_service.auth]
+
+// Access auth
+cfg.lookupCustomConfigAs<vda5050pp::config::KeyValueConfig>("my_service")
+  ->getSubConfigAs<vda5050pp::config::KeyValueConfig>("auth")
+  ->getStringEntry("user");
+
+```

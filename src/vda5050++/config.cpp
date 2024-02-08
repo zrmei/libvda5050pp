@@ -53,7 +53,8 @@ void Config::registerCustomConfig(std::string_view key,
   }
 }
 
-[[nodiscard]] std::shared_ptr<config::SubConfig> Config::lookupCustomConfig(std::string_view key) {
+[[nodiscard]] std::shared_ptr<config::SubConfig> Config::lookupCustomConfig(
+    std::string_view key) const {
   auto it = this->custom_config_registry_.find(key);
 
   if (it == this->custom_config_registry_.end()) {
@@ -126,19 +127,19 @@ void Config::load(std::string_view toml_string) {
     auto custom_table = table["custom"];
     auto module_table = table["module"];
 
-    const core::config::ConfigNode global_wrapped(global_table.node());
+    const core::config::ConstConfigNode global_wrapped(global_table.node());
     static_cast<config::SubConfig &>(this->global_config_).getFrom(global_wrapped);
 
-    const core::config::ConfigNode agv_description_wrapped(agv_description_table.node());
+    const core::config::ConstConfigNode agv_description_wrapped(agv_description_table.node());
     static_cast<config::SubConfig &>(this->agv_description_sub_config_)
         .getFrom(agv_description_wrapped);
 
     for (const auto &[key, sub_config] : this->module_config_registry_) {
-      const core::config::ConfigNode node_wrapped(module_table[key].node());
+      const core::config::ConstConfigNode node_wrapped(module_table[key].node());
       static_cast<config::SubConfig &>(*sub_config).getFrom(node_wrapped);
     }
     for (const auto &[key, sub_config] : this->custom_config_registry_) {
-      const core::config::ConfigNode node_wrapped(custom_table[key].node());
+      const core::config::ConstConfigNode node_wrapped(custom_table[key].node());
       sub_config->getFrom(node_wrapped);
     }
 
@@ -174,7 +175,6 @@ void Config::save(std::string &to_toml_string) const {
     toml::table sub_table;
     core::config::ConfigNode node_wrapped(sub_table);
     sub_config->putTo(node_wrapped);
-    custom_table.insert(key, sub_table);
     if (!sub_table.empty()) {
       custom_table.insert(key, sub_table);
     }

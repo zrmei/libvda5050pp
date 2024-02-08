@@ -11,3 +11,7 @@ toml::node_view<toml::node> ConfigNode::get() { return toml::node_view(this->nod
 toml::node_view<const toml::node> ConfigNode::get() const {
   return toml::node_view<const toml::node>(this->node_);
 }
+
+toml::node_view<const toml::node> ConstConfigNode::get() const {
+  return toml::node_view<const toml::node>(this->node_);
+}

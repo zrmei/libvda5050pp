@@ -20,7 +20,7 @@ protected:
   ///\brief Read all common module settings from a config node.
   /// NOTE: If you overwrite this function, make sure to call it from within that function.
   ///\param node  the config node
-  void getFrom(const ConfigNode &node) override;
+  void getFrom(const ConstConfigNode &node) override;
 
   ///\brief Write all common module settings to a config node.
   /// NOTE: If you overwrite this function, make sure to call it from within that function.

@@ -35,6 +35,24 @@ public:
   toml::node_view<const toml::node> get() const;
 };
 
+class ConstConfigNode : public vda5050pp::config::ConstConfigNode {
+private:
+  const toml::node *node_;
+
+public:
+  static inline ConstConfigNode &upcast(vda5050pp::config::ConstConfigNode &node) {
+    return static_cast<ConstConfigNode &>(node);
+  }
+  static inline const ConstConfigNode &upcast(const vda5050pp::config::ConstConfigNode &node) {
+    return static_cast<const ConstConfigNode &>(node);
+  }
+
+  explicit ConstConfigNode(const toml::node &node) : node_(&node) {}
+  explicit ConstConfigNode(const toml::node *node) : node_(node) {}
+
+  toml::node_view<const toml::node> get() const;
+};
+
 }  // namespace vda5050pp::core::config
 
 #endif  // PRIVATE_VDA5050_2B_2B_CORE_CONFIG_H_

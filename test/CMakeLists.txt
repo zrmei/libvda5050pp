@@ -32,6 +32,7 @@ add_executable(vda5050++_test
   ${PROJECT_SOURCE_DIR}/test/src/test_action_handler.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/common/any_ptr.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/config.cpp
+  ${PROJECT_SOURCE_DIR}/test/vda5050++/config/key_value_config.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/core/action_event_manager.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/core/agv_handler/action_event_handler.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/core/agv_handler/functional.cpp

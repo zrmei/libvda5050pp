@@ -13,10 +13,10 @@
 
 using namespace vda5050pp::config;
 
-void VisualizationTimerSubConfig::getFrom(const ConfigNode &node) {
+void VisualizationTimerSubConfig::getFrom(const ConstConfigNode &node) {
   this->ModuleSubConfig::getFrom(node);
 
-  auto node_view = vda5050pp::core::config::ConfigNode::upcast(node).get();
+  auto node_view = vda5050pp::core::config::ConstConfigNode::upcast(node).get();
   if (auto maybe_value = node_view["visualization_period_ms"].value<int>(); maybe_value) {
     this->visualization_period_ = std::chrono::milliseconds(*maybe_value);
   }

@@ -34,9 +34,9 @@ private:
   std::optional<JSONFile> localization_parameters_mode_;
 
 protected:
-  ///\brief Restore this object from a ConfigNode
+  ///\brief Restore this object from a ConstConfigNode
   ///\param node the config node
-  void getFrom(const ConfigNode &node) override;
+  void getFrom(const ConstConfigNode &node) override;
 
   ///\brief Dump this object to a ConfigNode
   ///\param node the config node

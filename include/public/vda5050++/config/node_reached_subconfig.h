@@ -34,7 +34,7 @@ protected:
   ///
   ///\param node the ConfigNode to read from.
   ///
-  void getFrom(const ConfigNode &node) override;
+  void getFrom(const ConstConfigNode &node) override;
 
   ///
   ///\brief Write the deviation values to a ConfigNode.

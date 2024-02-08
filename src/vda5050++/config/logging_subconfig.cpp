@@ -58,8 +58,8 @@ std::optional<std::string_view> LoggingSubConfig::getLogFileName() const {
   return this->log_file_name_;
 }
 
-void LoggingSubConfig::getFrom(const ConfigNode &node) {
-  auto node_view = core::config::ConfigNode::upcast(node).get();
+void LoggingSubConfig::getFrom(const ConstConfigNode &node) {
+  auto node_view = core::config::ConstConfigNode::upcast(node).get();
 
   if (auto ll = node_view["log_level"].value<std::string_view>(); ll.has_value()) {
     this->log_level_ = logLevelFromString(ll.value());

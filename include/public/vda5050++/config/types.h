@@ -21,10 +21,16 @@ namespace config {
 ///\brief The parent class for TOML nodes. Used to not expose the TOML Backend dependency.
 class ConfigNode {};
 
+///\brief The parent class for TOML nodes. Used to not expose the TOML Backend dependency.
+class ConstConfigNode {};
+
+class KeyValueConfig;
+
 ///\brief The SubConfig base class. To register a subconfig, one must inherit from this class.
 class SubConfig {
 public:
   friend class vda5050pp::Config;
+  friend class vda5050pp::config::KeyValueConfig;
 
 private:
   ///\brief Create a new VDA5050PPBadCast exception
@@ -34,9 +40,9 @@ private:
   static vda5050pp::VDA5050PPBadCast badCast(const std::type_info &is, const std::type_info &got);
 
 protected:
-  ///\brief Restore this object from a ConfigNode
+  ///\brief Restore this object from a ConstConfigNode
   ///\param node the config node
-  virtual void getFrom(const ConfigNode &node) = 0;
+  virtual void getFrom(const ConstConfigNode &node) = 0;
 
   ///\brief Dump this object to a ConfigNode
   ///\param node the config node

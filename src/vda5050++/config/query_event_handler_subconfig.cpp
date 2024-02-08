@@ -14,8 +14,8 @@
 
 using namespace vda5050pp::config;
 
-void QueryEventHandlerSubConfig::getFrom(const ConfigNode &node) {
-  auto toml_node = vda5050pp::core::config::ConfigNode::upcast(node).get();
+void QueryEventHandlerSubConfig::getFrom(const ConstConfigNode &node) {
+  auto toml_node = vda5050pp::core::config::ConstConfigNode::upcast(node).get();
 
   this->ModuleSubConfig::getFrom(node);
 

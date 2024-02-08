@@ -11,8 +11,8 @@
 using namespace vda5050pp::config;
 using namespace std::string_view_literals;
 
-void MqttSubConfig::getFrom(const ConfigNode &node) {
-  auto toml_node = vda5050pp::core::config::ConfigNode::upcast(node).get();
+void MqttSubConfig::getFrom(const ConstConfigNode &node) {
+  auto toml_node = vda5050pp::core::config::ConstConfigNode::upcast(node).get();
 
   this->ModuleSubConfig::getFrom(node);
 

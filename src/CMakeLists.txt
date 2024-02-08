@@ -11,9 +11,9 @@ set(LIBVDA5050PP_SOURCES
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config.cpp
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config/agv_description_subconfig.cpp
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config/global_config.cpp
+  ${PROJECT_SOURCE_DIR}/src/vda5050++/config/key_value_config.cpp
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config/logging_subconfig.cpp
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config/module_subconfig.cpp
-  ${PROJECT_SOURCE_DIR}/src/vda5050++/config/mqtt_subconfig.cpp
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config/mqtt_subconfig.cpp
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config/node_reached_subconfig.cpp
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config/query_event_handler_subconfig.cpp

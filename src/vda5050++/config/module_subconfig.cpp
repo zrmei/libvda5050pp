@@ -8,6 +8,8 @@
 
 using namespace vda5050pp::config;
 
-void ModuleSubConfig::getFrom(const ConfigNode &node) { this->LoggingSubConfig::getFrom(node); }
+void ModuleSubConfig::getFrom(const ConstConfigNode &node) {
+  this->LoggingSubConfig::getFrom(node);
+}
 
 void ModuleSubConfig::putTo(ConfigNode &node) const { this->LoggingSubConfig::putTo(node); }

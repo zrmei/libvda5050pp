@@ -10,10 +10,10 @@
 
 using namespace vda5050pp::config;
 
-void StateUpdateTimerSubConfig::getFrom(const ConfigNode &node) {
+void StateUpdateTimerSubConfig::getFrom(const ConstConfigNode &node) {
   this->ModuleSubConfig::getFrom(node);
 
-  auto node_view = vda5050pp::core::config::ConfigNode::upcast(node).get();
+  auto node_view = vda5050pp::core::config::ConstConfigNode::upcast(node).get();
   if (auto maybe_value = node_view["max_update_period_ms"].value<int>(); maybe_value) {
     this->state_update_period_ = std::chrono::milliseconds(*maybe_value);
   }

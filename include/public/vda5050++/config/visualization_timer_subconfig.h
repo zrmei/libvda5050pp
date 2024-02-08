@@ -26,11 +26,11 @@ private:
 
 public:
   ///
-  ///\brief Read this SubConfig from a ConfigNode.
+  ///\brief Read this SubConfig from a ConstConfigNode.
   ///
   ///\param node The ConfigNode to read from.
   ///
-  void getFrom(const ConfigNode &node) override;
+  void getFrom(const ConstConfigNode &node) override;
 
   ///
   ///\brief Write this SubConfig to a ConfigNode.

@@ -10,10 +10,10 @@
 
 using namespace vda5050pp::config;
 
-void NodeReachedSubConfig::getFrom(const ConfigNode &node) {
+void NodeReachedSubConfig::getFrom(const ConstConfigNode &node) {
   this->ModuleSubConfig::getFrom(node);
 
-  auto node_view = vda5050pp::core::config::ConfigNode::upcast(node).get();
+  auto node_view = vda5050pp::core::config::ConstConfigNode::upcast(node).get();
   if (auto maybe_value = node_view["default_node_deviation_xy"].value<double>(); maybe_value) {
     this->default_node_deviation_xy_ = *maybe_value;
   }

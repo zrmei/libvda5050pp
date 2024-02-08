@@ -32,9 +32,9 @@ class GlobalConfig : public vda5050pp::config::LoggingSubConfig {
   std::set<std::string, std::less<>> module_bw_list_;
 
 protected:
-  /// \brief Read EventManagerOptions and ModuleBWList from ConfigNode.
+  /// \brief Read EventManagerOptions and ModuleBWList from ConstConfigNode.
   /// \param node the ConfigNode to read from.
-  void getFrom(const ConfigNode &node) override;
+  void getFrom(const ConstConfigNode &node) override;
 
   /// \brief Write EventManagerOptions and ModuleBWList to ConfigNode.
   /// \param node the ConfigNode to write to.

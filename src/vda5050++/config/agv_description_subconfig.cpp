@@ -213,8 +213,8 @@ static toml::table toSimpleProtocolLimitsTable(
   return table;
 }
 
-void AGVDescriptionSubConfig::getFrom(const ConfigNode &node) {
-  auto node_view = core::config::ConfigNode::upcast(node).get();
+void AGVDescriptionSubConfig::getFrom(const ConstConfigNode &node) {
+  auto node_view = core::config::ConstConfigNode::upcast(node).get();
 
   this->agv_description_.agv_id = node_view["agv_id"].value_or<std::string_view>(""sv);
   this->agv_description_.manufacturer = node_view["manufacturer"].value_or<std::string_view>(""sv);

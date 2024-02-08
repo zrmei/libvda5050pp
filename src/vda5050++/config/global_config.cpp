@@ -10,8 +10,8 @@
 
 using namespace vda5050pp::config;
 
-void GlobalConfig::getFrom(const ConfigNode &node) {
-  auto node_view = core::config::ConfigNode::upcast(node).get();
+void GlobalConfig::getFrom(const ConstConfigNode &node) {
+  auto node_view = core::config::ConstConfigNode::upcast(node).get();
 
   this->LoggingSubConfig::getFrom(node);
   this->event_manager_options_.synchronous_event_dispatch =

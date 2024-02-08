@@ -18,8 +18,8 @@ private:
   std::string test_field_;
 
 protected:
-  void getFrom(const vda5050pp::config::ConfigNode &node) override {
-    auto toml_node = vda5050pp::core::config::ConfigNode::upcast(node).get();
+  void getFrom(const vda5050pp::config::ConstConfigNode &node) override {
+    auto toml_node = vda5050pp::core::config::ConstConfigNode::upcast(node).get();
     this->test_field_ = toml_node["test_field"].value_or<std::string>("none");
   }
 
@@ -86,7 +86,7 @@ TEST_CASE("Config - load/save for sub_configs", "[config][io]") {
 
 class TestSubConfig : public vda5050pp::config::SubConfig {
 private:
-  void getFrom(const vda5050pp::config::ConfigNode &) override { /* Unused */
+  void getFrom(const vda5050pp::config::ConstConfigNode &) override { /* Unused */
   }
   void putTo(vda5050pp::config::ConfigNode &) const override { /* Unused */
   }
@@ -95,7 +95,7 @@ private:
 
 class TestSubConfig2 : public vda5050pp::config::SubConfig {
 private:
-  void getFrom(const vda5050pp::config::ConfigNode &) override { /* Unused */
+  void getFrom(const vda5050pp::config::ConstConfigNode &) override { /* Unused */
   }
   void putTo(vda5050pp::config::ConfigNode &) const override { /* Unused */
   }

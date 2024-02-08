@@ -34,7 +34,7 @@ protected:
   ///\brief Get "log_level" and "log_file_name" from the config node.
   /// NOTE: If you overwrite this function, make sure to call it from within that function.
   ///\param node the config node
-  void getFrom(const ConfigNode &node) override;
+  void getFrom(const ConstConfigNode &node) override;
 
   ///\brief Write "log_level" and "log_file_name" to the config node.
   /// NOTE: If you overwrite this function, make sure to call it from within that function.

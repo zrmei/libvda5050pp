@@ -95,7 +95,19 @@ public:
   ///\param key the sub config key
   ///\throws vda5050pp::VDA5050PPInvalidArgument when the key is not registered.
   ///\return the sub config
-  [[nodiscard]] std::shared_ptr<config::SubConfig> lookupCustomConfig(std::string_view key);
+  [[nodiscard]] std::shared_ptr<config::SubConfig> lookupCustomConfig(std::string_view key) const;
+
+  ///\brief Get a custom sub config by key and try to upcast it.
+  ///\tparam T the specialized SubConfig type
+  ///\param key the config key
+  ///\throws vda5050pp::VDA5050PPInvalidArgument when the key is not registered.
+  ///\throws vda5050pp::VDA5050PPBadCast on invalid upcast
+  ///\return a shared_ptr to the upcasted module.
+  template <typename T>
+  [[nodiscard]] std::shared_ptr<T> inline lookupCustomConfigAs(std::string_view key) const
+      noexcept(false) {
+    return config::SubConfig::ptr_as<T>(lookupCustomConfig(key));
+  }
 
   ///\brief Remove a custom sub config
   ///\param key the key of the custom sub config

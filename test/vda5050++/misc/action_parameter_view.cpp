@@ -7,7 +7,7 @@
 
 #include "vda5050++/misc/action_parameter_view.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include "vda5050++/exception.h"
 

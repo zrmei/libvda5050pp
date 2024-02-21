@@ -9,7 +9,7 @@
 #include <spdlog/fmt/fmt.h>
 
 #include <array>
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <future>
 
 #include "test/data.h"

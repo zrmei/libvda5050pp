@@ -8,7 +8,7 @@
 #include <vda5050++/core/instance.h>
 #include <vda5050++/observer/order_observer.h>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 TEST_CASE("observer::OrderObserver - event handling", "[observer]") {
   vda5050pp::Config cfg;

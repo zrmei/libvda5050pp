@@ -103,10 +103,8 @@ target_link_libraries(vda5050++
 
   PRIVATE
 
-  # dynamic
-  PahoMqttCpp::paho-mqttpp3
-
   # static
+  $<BUILD_INTERFACE:paho-mqttpp3-static>
   $<BUILD_INTERFACE:spdlog::spdlog>
   $<BUILD_INTERFACE:eventpp::eventpp>
   $<BUILD_INTERFACE:tomlplusplus::tomlplusplus>
@@ -127,6 +125,3 @@ target_compile_definitions(vda5050++ PRIVATE
 )
 
 # ###############################################################################
-
-# This leads to problems with ROS
-# target_compile_options(vda5050++ PUBLIC "$<$<CONFIG:DEBUG>:-D_GLIBCXX_DEBUG>")

@@ -5,7 +5,9 @@
 # SPDX-License-Identifier: OLFL-1.3
 # 
 
-cmake_minimum_required(VERSION 3.16) # Adds instrumentation to all targets
+# SYSTEM Property for successful compilation of third party deps 
+# https://cmake.org/cmake/help/latest/prop_tgt/SYSTEM.html#prop_tgt:SYSTEM
+cmake_minimum_required(VERSION 3.25)
 
 # Do not check system dependencies for changes, when rebuilding.
 # Ninja build scripts always flag them as dirty, so each time the project is built
@@ -53,14 +55,20 @@ function(set_compiler_flag flag)
     unset(flag_supported CACHE)
 endfunction()
 
-set_compiler_flag("-Wall")
-set_compiler_flag("-Wextra")
-set_compiler_flag("-Wpedantic")
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    set_compiler_flag("-Wshadow") # Only use -Wshadow for clang, because some deps don't support -isystem
+# Compiler -W flags
+option(LIBVDA5050PP_ENABLE_W_FLAGS "Enable all -W* flags for the libVDA5050++" ON)
+if (${LIBVDA5050PP_ENABLE_W_FLAGS})
+    message("Enabling -W* flags for libVDA5050++")
+    set_compiler_flag("-Wall")
+    set_compiler_flag("-Wextra")
+    set_compiler_flag("-Wpedantic")
+    set_compiler_flag("-Wshadow")
+    set_compiler_flag("-Wconversion")
+    set_compiler_flag("-Werror")
+else()
+    message("Disabling -W* flags for libVDA5050++")
+    set_compiler_flag("-w")
 endif()
-set_compiler_flag("-Wconversion")
-set_compiler_flag("-Werror")
 
 # CI-Options
 option(LIBVDA5050PP_CI_ENABLE_ALL "Enable all build options (used by CI)" OFF)

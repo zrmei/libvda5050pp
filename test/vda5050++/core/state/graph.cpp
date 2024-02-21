@@ -6,7 +6,7 @@
 //
 #include "vda5050++/core/state/graph.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include "vda5050++/exception.h"
 

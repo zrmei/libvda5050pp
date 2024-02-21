@@ -11,7 +11,7 @@
 #include <spdlog/fmt/fmt.h>
 
 #include <array>
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 TEST_CASE("common::math::norm", "[common][math][geometry]") {
   GIVEN("Some vectors") {

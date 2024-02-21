@@ -9,7 +9,7 @@
 
 #include "vda5050++/core/common/interruptable_timer.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <thread>
 
 TEST_CASE("vda5050pp::core::common::InterruptableTimer - uninterrupted sleep", "[thread]") {

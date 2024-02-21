@@ -13,19 +13,29 @@ FROM ubuntu:jammy
 # Install build dependencies
 RUN apt update -y && apt install -y \
   build-essential\
+  ca-certificates \
   catch2 \
   clang-14 \
-  cmake \
   doxygen \
   git \
-  libpaho-mqtt-dev \
-  libpaho-mqttpp-dev \
+  gpg \
   libssl-dev \
   ninja-build \
   nlohmann-json3-dev \
   openssl \
   python3-pip \
   sudo \
+  wget \
+  && apt autoremove -y && apt clean
+
+# Add kitware's repo key
+RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+
+# Add kitware repo for cmake >= 3.25
+RUN echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ jammy main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null
+
+# Install cmake >= 3.25
+RUN apt update -y && apt install -y cmake \
   && apt autoremove -y && apt clean
 
 # Install mkdocs

@@ -6,7 +6,7 @@
 //
 #include "vda5050++/core/common/exception.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 static void testMkFnContext() {
   vda5050pp::VDA5050PPError err(MK_FN_EX_CONTEXT("description"));

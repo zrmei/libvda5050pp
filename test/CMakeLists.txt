@@ -7,7 +7,7 @@
 
 find_package(Threads REQUIRED)
 
-set(LIBVDA5050PP_CATCH2_VERSION "2.13.10" CACHE STRING "Overwrite catch2 version")
+set(LIBVDA5050PP_CATCH2_VERSION "3.4.0" CACHE STRING "Overwrite catch2 version")
 find_package(Catch2 ${LIBVDA5050PP_CATCH2_VERSION} QUIET)
 
 if(Catch2_FOUND)
@@ -21,13 +21,17 @@ else()
 endif()
 
 if(Catch2_SOURCE_DIR)
-  list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/contrib)
+  list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
 endif()
+
+# Prevents link errors when using catch macros with c++17 contents,
+# because Catch2 defaults to c++14 
+target_compile_features(Catch2 PUBLIC cxx_std_17)
+target_compile_features(Catch2WithMain PUBLIC cxx_std_17)
 
 include(Catch)
 
 add_executable(vda5050++_test
-  ${PROJECT_SOURCE_DIR}/test/main.cpp
   ${PROJECT_SOURCE_DIR}/test/src/data.cpp
   ${PROJECT_SOURCE_DIR}/test/src/test_action_handler.cpp
   ${PROJECT_SOURCE_DIR}/test/vda5050++/common/any_ptr.cpp
@@ -77,7 +81,7 @@ add_executable(vda5050++_test
   ${PROJECT_SOURCE_DIR}/test/vda5050++/sinks/status_sink.cpp
 )
 target_link_libraries(vda5050++_test
-  Catch2::Catch2
+  Catch2::Catch2WithMain
   vda5050++
   Threads::Threads
   spdlog::spdlog

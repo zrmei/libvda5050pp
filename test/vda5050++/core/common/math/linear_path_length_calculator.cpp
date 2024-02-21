@@ -8,7 +8,7 @@
 
 #include "vda5050++/core/common/math/linear_path_length_calculator.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 TEST_CASE("core::common::math::LinearPathCalculator - path calculation", "[core][common][math]") {
   GIVEN("Some linear path calculator and some vertices") {

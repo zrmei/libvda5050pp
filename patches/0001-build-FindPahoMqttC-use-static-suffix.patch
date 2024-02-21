@@ -1,0 +1,29 @@
+From 8ec1eaab775ee9f2d822410d07f0a86d22ef0d0f Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Jonas=20R=C3=B6ger?= <jonas.kieran.roeger@iml.fraunhofer.de>
+Date: Thu, 15 Feb 2024 18:28:59 +0100
+Subject: [PATCH] build: FindPahoMqttC use -static suffix
+
+---
+ cmake/FindPahoMqttC.cmake | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/cmake/FindPahoMqttC.cmake b/cmake/FindPahoMqttC.cmake
+index 63db30c..135f401 100644
+--- a/cmake/FindPahoMqttC.cmake
++++ b/cmake/FindPahoMqttC.cmake
+@@ -7,10 +7,8 @@ else()
+ endif()
+ 
+ # add suffix when using static Paho MQTT C library variant on Windows
+-if(WIN32)
+-    if(PAHO_BUILD_STATIC)
+-        set(_PAHO_MQTT_C_LIB_NAME ${_PAHO_MQTT_C_LIB_NAME}-static)
+-    endif()
++if(PAHO_BUILD_STATIC)
++    set(_PAHO_MQTT_C_LIB_NAME ${_PAHO_MQTT_C_LIB_NAME}-static)
+ endif()
+ 
+ if(PAHO_WITH_MQTT_C)
+-- 
+2.34.1
+

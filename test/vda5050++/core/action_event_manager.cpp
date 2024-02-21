@@ -7,7 +7,7 @@
 
 #include "vda5050++/core/action_event_manager.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <chrono>
 
 using namespace std::chrono_literals;

@@ -7,7 +7,7 @@
 
 #include "vda5050++/core/agv_handler/action_event_handler.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include "test/test_action_handler.h"
 #include "vda5050++/core/common/container.h"

@@ -6,7 +6,7 @@
 //
 #include "vda5050++/core/common/formatters.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 TEST_CASE("fmt::formatter vda5050pp::BlockingType", "[core][common][formatter]") {
   SECTION("BlockingType::HARD") {

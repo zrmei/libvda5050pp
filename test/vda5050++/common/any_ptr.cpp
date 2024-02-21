@@ -6,7 +6,7 @@
 //
 #include "vda5050++/misc/any_ptr.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 TEST_CASE("common::AnyPtr behaviour") {
   auto int_ptr = std::make_shared<int>(7);

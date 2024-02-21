@@ -7,7 +7,7 @@
 
 #include "vda5050++/core/checks/order.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include "vda5050++/core/instance.h"
 

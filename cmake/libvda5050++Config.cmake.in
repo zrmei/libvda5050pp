@@ -10,5 +10,4 @@
 
 find_package(Threads REQUIRED)
 find_package(vda5050_message_structs REQUIRED)
-find_package(PahoMqttCpp REQUIRED)
 include ( "${CMAKE_CURRENT_LIST_DIR}/libvda5050++BaseTargets.cmake" )

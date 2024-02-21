@@ -6,7 +6,7 @@
 //
 #include "vda5050++/core/agv_handler/action_state.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <chrono>
 #include <string_view>
 

@@ -1,62 +1,19 @@
 # Introduction
 
-All dependencies except [PahoMqttCpp](#pahomqttcpp) will be automatically downloaded via [CPM](https://github.com/cpm-cmake/CPM.cmake). If you have some of the dependencies
-installed, you might want to check if the versions match, since the libVDA5050++ searches
+All dependencies except OpenSSL will be automatically downloaded via [CPM](https://github.com/cpm-cmake/CPM.cmake). If you have some of the dependencies installed, you might want to check if the versions match, since the libVDA5050++ searches
 for exact version matches. If you intend to use your system installation, please use the
 `LIBVDA5050PP_<dep>_VERSION` CMake flags to overwrite the version to be searched (see [Install/Configuration Options](install.md#configuration-options)).
 
-# PahoMqttCpp (manual)
+# PahoMqttCpp (automatic)
 
 Can be found in this [Repository](https://github.com/eclipse/paho.mqtt.cpp), published under the [Eclipse Public License 1.0](https://github.com/eclipse/paho.mqtt.cpp/blob/master/epl-v10).
 
 | CPM Version | APT Version |
 | ----------- | ----------- |
-| -           | `1.2.0`     |
+| `1.3.2`     | `1.2.0`     |
 
-Install options:
-
-- `apt install libpaho-mqtt-dev libpaho-mqttpp-dev openssl libssl-dev`
-- CMake install from source
-
-#### CMake install from source instructions
-
-Prerequisites:
-
-```sh
-apt install libssl-dev
-```
-
-Build and install paho.mqtt.c:
-
-```shell
-git clone --depth 1 --branch v1.3.9 https://github.com/eclipse/paho.mqtt.c.git
-cd paho.mqtt.c
-cmake -Bbuild -H. -DPAHO_ENABLE_TESTING=OFF -DPAHO_BUILD_STATIC=ON \
-    -DPAHO_WITH_SSL=ON -DPAHO_HIGH_PERFORMANCE=ON
-sudo cmake --build build/ --target install
-sudo ldconfig
-```
-
-Optionally add the `-DCMAKE_INSTALL_PREFIX=$HOME/.local` flag to install
-the library locally.
-
-
-Build and install paho.mqtt.cpp:
-
-```shell
-git clone --depth 1 --branch v1.2.0 https://github.com/eclipse/paho.mqtt.cpp
-cd paho.mqtt.cpp
-cmake -Bbuild -H. -DPAHO_BUILD_STATIC=ON \
-  -DPAHO_BUILD_DOCUMENTATION=TRUE -DPAHO_BUILD_SAMPLES=TRUE
-sudo cmake --build build/ --target install
-sudo ldconfig
-```
-
-If the `paho.mqtt.c` library was installed locally, add the `-DCMAKE_PREFIX_PATH=$HOME/.local` flag,
-to locate it.
-
-Optionally add the `-DCMAKE_INSTALL_PREFIX=$HOME/.local` flag to install
-the (paho.mqtt.cpp) library locally.
+Since version `1.3.2` we were able to install Paho via CPM, however this approach is not yet optimal (related [Issue](https://github.com/eclipse/paho.mqtt.cpp/issues/469))
+and requires a little patch applied via CPM directly. This will probably be resolved in future Paho versions.
 
 # Eventpp (automatic)
 
@@ -64,7 +21,7 @@ Can be found in this [Repository](https://github.com/wqking/eventpp), published 
 
 | CPM Version | APT Version |
 | ----------- | ----------- |
-| `0.1.2`     | -           |
+| `0.1.3`     | -           |
 
 Install options:
 

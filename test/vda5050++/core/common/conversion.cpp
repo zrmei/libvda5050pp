@@ -8,7 +8,7 @@
 
 #include "vda5050++/core/common/conversion.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 TEST_CASE("core::common::fromActionDeclaration ", "[core][common]") {
   vda5050pp::agv_description::ParameterRange p1;

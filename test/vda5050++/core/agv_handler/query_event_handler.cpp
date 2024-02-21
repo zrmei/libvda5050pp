@@ -4,7 +4,7 @@
 // For details on the licensing terms, see the LICENSE file.
 // SPDX-License-Identifier: OLFL-1.3
 //
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include "vda5050++/core/instance.h"
 

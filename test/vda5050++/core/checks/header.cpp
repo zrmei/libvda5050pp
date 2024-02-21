@@ -7,7 +7,7 @@
 
 #include "vda5050++/core/checks/header.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include "vda5050++/core/instance.h"
 #include "vda5050++/version.h"

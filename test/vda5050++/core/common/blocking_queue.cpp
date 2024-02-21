@@ -12,14 +12,15 @@
 
 #include <algorithm>
 #include <atomic>
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <chrono>
 #include <functional>
 #include <list>
 #include <optional>
 #include <thread>
 
-TEST_CASE("core::common::BlockingQueue synchronized push and pop", "[core::common::BlockingQueue") {
+TEST_CASE("core::common::BlockingQueue synchronized push and pop",
+          "[core::common::BlockingQueue]") {
   GIVEN("An empty BlockingQueue") {
     vda5050pp::core::common::BlockingQueue<int> queue;
 
@@ -70,7 +71,7 @@ template <typename QueueT> bool containsSame(QueueT &lhs, QueueT &rhs) {
   return same;
 }
 
-TEST_CASE("core::common::BlockingQueue copy and move", "[core::common::BlockingQueue") {
+TEST_CASE("core::common::BlockingQueue copy and move", "[core::common::BlockingQueue]") {
   GIVEN("A queue with some values") {
     vda5050pp::core::common::BlockingQueue<int> queue;
 

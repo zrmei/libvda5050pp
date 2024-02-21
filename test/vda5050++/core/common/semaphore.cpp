@@ -10,13 +10,13 @@
 
 #include "vda5050++/core/common/semaphore.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <chrono>
 #include <list>
 #include <thread>
 #include <utility>
 
-TEST_CASE("core::common::Semaphore basic acquire and release", "[core::common::Semaphore") {
+TEST_CASE("core::common::Semaphore basic acquire and release", "[core::common::Semaphore]") {
   GIVEN("A Semaphore managing 2 resources") {
     vda5050pp::core::common::Semaphore semaphore(2);
     bool use_resource = false;

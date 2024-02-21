@@ -7,7 +7,7 @@
 
 #include "vda5050++/core/events/event_control_blocks.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include "vda5050++/core/generic_event_manager.h"
 #include "vda5050++/events/event_type.h"

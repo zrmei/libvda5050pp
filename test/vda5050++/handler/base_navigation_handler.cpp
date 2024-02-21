@@ -7,7 +7,7 @@
 
 #include "vda5050++/handler/base_navigation_handler.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include "test/data.h"
 #include "vda5050++/core/instance.h"

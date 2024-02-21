@@ -6,7 +6,7 @@
 //
 #include "vda5050++/config.h"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 #include <memory>
 #include <random>
 

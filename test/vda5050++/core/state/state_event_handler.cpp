@@ -7,7 +7,7 @@
 
 #include <spdlog/fmt/fmt.h>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_all.hpp>
 
 #include "test/data.h"
 #include "vda5050++/core/common/type_traits.h"

@@ -8,6 +8,7 @@
 #ifndef PUBLIC_VDA5050_2B_2B_CONFIG_LOGGING_SUBCONFIG_H_
 #define PUBLIC_VDA5050_2B_2B_CONFIG_LOGGING_SUBCONFIG_H_
 
+#include <filesystem>
 #include <optional>
 #include <string>
 
@@ -28,7 +29,8 @@ enum class LogLevel {
 class LoggingSubConfig : public SubConfig {
 private:
   std::optional<LogLevel> log_level_;
-  std::optional<std::string> log_file_name_;
+  std::optional<std::filesystem::path> log_file_name_;
+  bool log_file_timestamp_suffix_ = true;
 
 protected:
   ///\brief Get "log_level" and "log_file_name" from the config node.
@@ -52,11 +54,19 @@ public:
 
   ///\brief Set an optional log file
   ///\param file_name the logfile
-  void setLogFileName(std::optional<std::string_view> file_name);
+  void setLogFileName(const std::optional<std::filesystem::path> &file_name);
 
   ///\brief Get the current log file
-  ///\return std::optional<std::string_view> the log file
-  std::optional<std::string_view> getLogFileName() const;
+  ///\return std::optional<std::filesystem::pah> the log file
+  std::optional<std::filesystem::path> getLogFileName() const;
+
+  ///\brief Use a timestamp suffix for the log file name
+  ///\param timestamp_suffix
+  void setLogFileTimestampSuffix(bool timestamp_suffix);
+
+  ///\brief Get the current timestamp suffix setting
+  ///\return false if no timestamp suffix is used
+  bool getLogFileTimestampSuffix() const;
 };
 }  // namespace vda5050pp::config
 

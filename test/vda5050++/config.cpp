@@ -39,6 +39,10 @@ TEST_CASE("Config - load/save for sub_configs", "[config][io]") {
 
   cfg.refMqttSubConfig().refOptions().username = "test user";
   cfg.refMqttSubConfig().refOptions().password = "s3cur3p4$$w0rd";
+  cfg.refMqttSubConfig().refOptions().min_retry_interval_ = std::chrono::seconds(2);
+  cfg.refMqttSubConfig().refOptions().max_retry_interval_ = std::chrono::seconds(10);
+  cfg.refMqttSubConfig().refOptions().keep_alive_interval_ = std::chrono::seconds(5);
+  cfg.refMqttSubConfig().refOptions().connect_timeout_ = std::chrono::seconds(15);
   cfg.refGlobalConfig().bwListModule("Mqtt");
   cfg.refGlobalConfig().bwListModule("Test");
   cfg.refGlobalConfig().useBlackList();
@@ -62,6 +66,14 @@ TEST_CASE("Config - load/save for sub_configs", "[config][io]") {
               cfg.refMqttSubConfig().getOptions().username);
       REQUIRE(cfg2.refMqttSubConfig().getOptions().password ==
               cfg.refMqttSubConfig().getOptions().password);
+      REQUIRE(cfg2.refMqttSubConfig().getOptions().min_retry_interval_ ==
+              cfg.refMqttSubConfig().getOptions().min_retry_interval_);
+      REQUIRE(cfg2.refMqttSubConfig().getOptions().max_retry_interval_ ==
+              cfg.refMqttSubConfig().getOptions().max_retry_interval_);
+      REQUIRE(cfg2.refMqttSubConfig().getOptions().keep_alive_interval_ ==
+              cfg.refMqttSubConfig().getOptions().keep_alive_interval_);
+      REQUIRE(cfg2.refMqttSubConfig().getOptions().connect_timeout_ ==
+              cfg.refMqttSubConfig().getOptions().connect_timeout_);
       REQUIRE_FALSE(cfg2.getGlobalConfig().isListedModule("Mqtt"));
       REQUIRE_FALSE(cfg2.getGlobalConfig().isListedModule("Test"));
       REQUIRE(cfg2.getGlobalConfig().isListedModule("Other"));

@@ -50,11 +50,11 @@ void LoggingSubConfig::setLogLevel(std::optional<LogLevel> level) { this->log_le
 
 std::optional<LogLevel> LoggingSubConfig::getLogLevel() const { return this->log_level_; }
 
-void LoggingSubConfig::setLogFileName(std::optional<std::string_view> file_name) {
+void LoggingSubConfig::setLogFileName(const std::optional<std::filesystem::path> &file_name) {
   this->log_file_name_ = file_name;
 }
 
-std::optional<std::string_view> LoggingSubConfig::getLogFileName() const {
+std::optional<std::filesystem::path> LoggingSubConfig::getLogFileName() const {
   return this->log_file_name_;
 }
 
@@ -65,6 +65,7 @@ void LoggingSubConfig::getFrom(const ConstConfigNode &node) {
     this->log_level_ = logLevelFromString(ll.value());
   }
   this->log_file_name_ = node_view["log_file_name"].value<std::string_view>();
+  this->log_file_timestamp_suffix_ = node_view["log_file_timestamp_suffix"].value_or(true);
 }
 
 void LoggingSubConfig::putTo(ConfigNode &node) const {
@@ -75,6 +76,15 @@ void LoggingSubConfig::putTo(ConfigNode &node) const {
     table.insert("log_level", logLevelToString(this->log_level_.value()));
   }
   if (this->log_file_name_.has_value()) {
-    table.insert("log_file_name", this->log_file_name_.value());
+    table.insert("log_file_name", this->log_file_name_->string());
   }
+  table.insert("log_file_timestamp_suffix", this->log_file_timestamp_suffix_);
+}
+
+void LoggingSubConfig::setLogFileTimestampSuffix(bool timestamp_suffix) {
+  this->log_file_timestamp_suffix_ = timestamp_suffix;
+}
+
+bool LoggingSubConfig::getLogFileTimestampSuffix() const {
+  return this->log_file_timestamp_suffix_;
 }

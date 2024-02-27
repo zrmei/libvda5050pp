@@ -11,6 +11,13 @@
 using namespace vda5050pp::config;
 using namespace std::string_view_literals;
 
+constexpr std::optional<std::chrono::milliseconds> applyMS(std::optional<int64_t> value) {
+  if (value.has_value()) {
+    return std::chrono::milliseconds(value.value());
+  }
+  return std::nullopt;
+}
+
 void MqttSubConfig::getFrom(const ConstConfigNode &node) {
   auto toml_node = vda5050pp::core::config::ConstConfigNode::upcast(node).get();
 
@@ -23,6 +30,11 @@ void MqttSubConfig::getFrom(const ConstConfigNode &node) {
   this->options_.interface = toml_node["interface"].value_or("uagv"sv);
   this->options_.enable_cert_check = toml_node["enable_cert_check"].value_or(false);
   this->options_.use_ssl = toml_node["use_ssl"].value_or(false);
+  this->options_.min_retry_interval_ = applyMS(toml_node["min_retry_interval_ms"].value<int64_t>());
+  this->options_.max_retry_interval_ = applyMS(toml_node["max_retry_interval_ms"].value<int64_t>());
+  this->options_.keep_alive_interval_ =
+      applyMS(toml_node["keep_alive_interval_ms"].value<int64_t>());
+  this->options_.connect_timeout_ = applyMS(toml_node["connect_timeout_ms"].value<int64_t>());
 }
 
 void MqttSubConfig::putTo(ConfigNode &node) const {
@@ -43,6 +55,30 @@ void MqttSubConfig::putTo(ConfigNode &node) const {
   toml_node.as_table()->insert("interface", this->options_.interface);
   toml_node.as_table()->insert("enable_cert_check", this->options_.enable_cert_check);
   toml_node.as_table()->insert("use_ssl", this->options_.use_ssl);
+  if (this->options_.min_retry_interval_.has_value()) {
+    toml_node.as_table()->insert("min_retry_interval_ms",
+                                 std::chrono::duration_cast<std::chrono::milliseconds>(
+                                     this->options_.min_retry_interval_.value())
+                                     .count());
+  }
+  if (this->options_.max_retry_interval_.has_value()) {
+    toml_node.as_table()->insert("max_retry_interval_ms",
+                                 std::chrono::duration_cast<std::chrono::milliseconds>(
+                                     this->options_.max_retry_interval_.value())
+                                     .count());
+  }
+  if (this->options_.keep_alive_interval_.has_value()) {
+    toml_node.as_table()->insert("keep_alive_interval_ms",
+                                 std::chrono::duration_cast<std::chrono::milliseconds>(
+                                     this->options_.keep_alive_interval_.value())
+                                     .count());
+  }
+  if (this->options_.connect_timeout_.has_value()) {
+    toml_node.as_table()->insert("connect_timeout_ms",
+                                 std::chrono::duration_cast<std::chrono::milliseconds>(
+                                     this->options_.connect_timeout_.value())
+                                     .count());
+  }
 }
 
 void MqttSubConfig::setOptions(const MqttOptions &options) { this->options_ = options; }

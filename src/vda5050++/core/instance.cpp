@@ -112,20 +112,33 @@ constexpr spdlog::level::level_enum convertLogLevel(vda5050pp::config::LogLevel 
 void Instance::initializeComponents() {
   const auto &config = this->getConfig();
 
-  // Setup loggers
-  // TODO: add file support
-  spdlog::set_automatic_registration(true);
   auto global_level = config.getGlobalConfig().getLogLevel().value_or(config::LogLevel::k_info);
+  auto global_file = config.getGlobalConfig().getLogFileName();
+  auto global_timestamp_suffix = config.getGlobalConfig().getLogFileTimestampSuffix();
+
+  // Setup global and event logger
+  auto global_logger =
+      recreateLogger(logger_names::k_instance, global_file, global_timestamp_suffix);
+  global_logger->set_level(convertLogLevel(global_level));
+  recreateLogger(logger_names::k_events, global_logger->sinks())
+      ->set_level(convertLogLevel(global_level));
+
+  // Setup loggers
   for (const auto &key : Instance::registeredModules()) {
     auto cfg = config.lookupModuleConfig(key);
-    auto logger =
-        recreateLogger<spdlog::sinks::stdout_color_sink_mt>(logger_names::remapModule(key));
+    std::shared_ptr<spdlog::logger> logger;
+
+    if (cfg->getLogFileName().has_value()) {
+      // Create own sinks
+      logger = recreateLogger(logger_names::remapModule(key), cfg->getLogFileName(),
+                              cfg->getLogFileTimestampSuffix());
+    } else {
+      // Follow global logger
+      logger = recreateLogger(logger_names::remapModule(key), global_logger->sinks());
+    }
+
     logger->set_level(convertLogLevel(cfg->getLogLevel().value_or(global_level)));
   }
-  recreateLogger<spdlog::sinks::stdout_color_sink_mt>(logger_names::k_instance)
-      ->set_level(convertLogLevel(global_level));
-  recreateLogger<spdlog::sinks::stdout_color_sink_mt>(logger_names::k_events)
-      ->set_level(convertLogLevel(global_level));
 
   // Each one relies on Instance member construction
   for (const auto &[name, module_ptr] : Instance::modules_) {

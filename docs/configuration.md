@@ -144,10 +144,11 @@ Several of the libVDA5050++'s internal modules can be configured.
 
 The logging behavior of each module can be controlled with the following keys inside of it's table:
 
-| key           | description                                         | optional |
-| ------------- | --------------------------------------------------- | -------- |
-| log_level     | `debug`, `info`, `warn`, `error` or `off`           | yes      |
-| log_file_name | a file to write the log to. (currently unsupported) | yes      |
+| key                       | description                                                                                  | optional | default |
+| ------------------------- | -------------------------------------------------------------------------------------------- | -------- | ------- |
+| log_level                 | `debug`, `info`, `warn`, `error` or `off`                                                    | yes      | `info`  |
+| log_file_name             | A file to write the log to. (Modules will inherit this property from global, if unspecified) | yes      | `none`  |
+| log_file_timestamp_suffix | If true, add a `_{seconds_since_epoch}` suffix to the `log_file_name`                        | no       | `true`  |
 
 There are modules, which cannot be configured yet. The logging can still be controlled.
 If you see a log entry beginning with `[<module_name>]` that you want to control, simply set
@@ -163,15 +164,19 @@ cfg.lookupModuleConfig("<module_name>")->setLogLevel(vda5050pp::config::LogLevel
 The MQTT sub config is probably the most important one, since it describes
 how to connect to the broker.
 
-| key               | description                                                               | optional | default                |
-| ----------------- | ------------------------------------------------------------------------- | -------- | ---------------------- |
-| username          | MQTT username.                                                            | yes      | none                   |
-| password          | MQTT password.                                                            | yes      | none                   |
-| version_overwrite | Overwrite the version substring in the MQTT topic.                        | yes      | `v2`                   |
-| server            | Set the broker address in this format `[tcp/ws/ssl/wss]://<host>:<port>`. | yes      | `tcp://localhost:1883` |
-| interface         | Set the interface in the MQTT topic.                                      | yes      | `uagv`                 |
-| enable_cert_check | Enable certificate checking in combination with ssl.                      | yes      | `false`                |
-| use_ssl           | Enable ssl.                                                               | yes      | `false`                |
+| key                    | description                                                                        | optional | default                |
+| ---------------------- | ---------------------------------------------------------------------------------- | -------- | ---------------------- |
+| username               | MQTT username.                                                                     | yes      | none                   |
+| password               | MQTT password.                                                                     | yes      | none                   |
+| version_overwrite      | Overwrite the version substring in the MQTT topic.                                 | yes      | `v2`                   |
+| server                 | Set the broker address in this format `[tcp/ws/ssl/wss]://<host>:<port>`.          | yes      | `tcp://localhost:1883` |
+| interface              | Set the interface in the MQTT topic.                                               | yes      | `uagv`                 |
+| enable_cert_check      | Enable certificate checking in combination with ssl.                               | yes      | `false`                |
+| use_ssl                | Enable ssl.                                                                        | yes      | `false`                |
+| min_retry_interval_ms  | Minimum retry interval for the MQTT connection. (Double after each failed attempt) | yes      | `2000`                 |
+| max_retry_interval_ms  | Maximum retry interval for the MQTT connection.                                    | yes      | `16000`                |
+| keep_alive_interval_ms | Keep alive interval for the MQTT connection.                                       | yes      | `<paho_default>`       |
+| connect_timeout_ms     | Connection timeout for the MQTT connection.                                        | yes      | `<paho_default>`       |
 
 ### `[module.NodeReachedHandler]` subtable
 

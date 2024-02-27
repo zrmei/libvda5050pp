@@ -168,6 +168,8 @@ json = '''{
 
 [global]
 log_level = 'debug' # The global log-level used as a fallback by each module
+log_file_name = 'vda5050.log' # The name of the log file (modules will inherit this file)
+log_file_timestamp_suffix = true # If true, the log file will have a timestamp suffix
 module_black_list = [ 'NodeReachedHandler' ] # A list of modules that should not be loaded
 
 [global.event_manager_options]

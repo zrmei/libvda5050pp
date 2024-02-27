@@ -10,6 +10,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <filesystem>
 #include <memory>
 
 #include "vda5050++/core/common/exception.h"
@@ -60,20 +61,26 @@ template <typename String> inline std::shared_ptr<spdlog::logger> getRemappedLog
 }
 
 ///
-///\brief Re-create a logger, first drop, then create
+///\brief Recreate a logger (drop, create, register)
 ///
-///\tparam Sink the sink type
-///\tparam String the string type
-///\tparam Args the argument types for the sink
-///\param name logger name
-///\param args sink arguments
-///\return std::shared_ptr<spdlog::logger> pointer to the logger
+///\param name the name of the logger
+///\param file_name an optional file name for file logging
+///\param timestamp_suffix add a timestamp suffix to the file name
+///\return std::shared_ptr<spdlog::logger> the created logger
 ///
-template <typename Sink, typename String, typename... Args>
-inline std::shared_ptr<spdlog::logger> recreateLogger(const String &name, Args &&...args) {
-  spdlog::drop(static_cast<std::string>(name));
-  return spdlog::create<Sink>(static_cast<std::string>(name), std::forward<Args>(args)...);
-}
+std::shared_ptr<spdlog::logger> recreateLogger(std::string_view name,
+                                               std::optional<std::filesystem::path> file_name,
+                                               bool timestamp_suffix);
+
+///
+///\brief Recreate a logger (drop, create, register) with existing sinks
+///
+///\param name the name of the logger
+///\param sinks sinks to use for the logger
+///\return std::shared_ptr<spdlog::logger> the created logger
+///
+std::shared_ptr<spdlog::logger> recreateLogger(std::string_view name,
+                                               const std::vector<spdlog::sink_ptr> &sinks);
 
 /// @brief Get non-nullptr logger for AGVHandler
 /// @return non-nullptr logger

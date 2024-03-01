@@ -121,7 +121,7 @@ void StatusManager::addError(const vda5050::Error &error) {
 
 void StatusManager::addInfo(const vda5050::Info &info) {
   std::unique_lock lock(this->mutex_);
-  this->informations_.push_back(info);
+  this->information_.push_back(info);
 }
 
 void StatusManager::dumpTo(vda5050::State &state) {
@@ -131,7 +131,7 @@ void StatusManager::dumpTo(vda5050::State &state) {
   state.distanceSinceLastNode = this->distance_since_last_node_;
   state.driving = this->driving_;
   state.errors = this->errors_;
-  state.informations = this->informations_;
+  state.information = this->information_;
   state.loads = this->loads_;
   state.newBaseRequest = this->new_base_request_;
   state.operatingMode = this->operating_mode_;

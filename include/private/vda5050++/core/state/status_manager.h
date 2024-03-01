@@ -33,9 +33,9 @@ private:
   std::optional<std::vector<vda5050::Load>> loads_;
   std::optional<bool> new_base_request_;
   vda5050::BatteryState battery_state_;
-  vda5050::OperatingMode operating_mode_;
+  vda5050::OperatingMode operating_mode_ = vda5050::OperatingMode::SERVICE;
   std::vector<vda5050::Error> errors_;
-  std::vector<vda5050::Info> informations_;
+  std::vector<vda5050::Info> information_;
   vda5050::SafetyState safety_state_;
   vda5050::AGVPosition agv_position_;
   std::optional<vda5050::Velocity> velocity_;
@@ -122,7 +122,7 @@ public:
         vda5050pp::core::common::is_signature<FunctionT, void(std::vector<vda5050::Info> &)>::value,
         "Expected type void(std::vector<vda5050::Info> &)");
     std::unique_lock lock(this->mutex_);
-    alter_function(this->informations_);
+    alter_function(this->information_);
   }
 
   void dumpTo(vda5050::State &state);

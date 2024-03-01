@@ -8,7 +8,7 @@
 find_package(Threads REQUIRED)
 
 # include vda5050_message_structs ##################################################################
-set(LIBVDA5050PP_VDA5050_MESSAGE_STRUCTS_VERSION "2.0.0.4" CACHE STRING "Overwrite vda5050_message_structs version")
+set(LIBVDA5050PP_VDA5050_MESSAGE_STRUCTS_VERSION "2.0.0.5" CACHE STRING "Overwrite vda5050_message_structs version")
 
 if(NOT LIBVDA5050PP_VDA5050_MESSAGE_STRUCTS_DEP_LOCAL)
   find_package(vda5050_message_structs ${LIBVDA5050PP_VDA5050_MESSAGE_STRUCTS_VERSION} QUIET)

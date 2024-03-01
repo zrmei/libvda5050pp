@@ -416,12 +416,12 @@ TEST_CASE("core::state::StateEventHandler", "[core][state]") {
   quickStateEventTest(
       info_add,
       [](const vda5050::State &state) {
-        REQUIRE(state.informations.size() == 1);
+        REQUIRE(state.information.size() == 1);
 
         auto info_alter = std::make_shared<vda5050pp::events::InfosAlter>();
         info_alter->alter_function = [](auto &infos) { infos.push_back(vda5050::Info{}); };
         quickStateEventTest(
-            info_alter, [](const vda5050::State &s) { REQUIRE(s.informations.size() == 2); }, true);
+            info_alter, [](const vda5050::State &s) { REQUIRE(s.information.size() == 2); }, true);
       },
       true);
 }

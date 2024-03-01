@@ -263,9 +263,9 @@ TEST_CASE("Behaviour of AGV side Status events", "[event][status]") {
       vda5050::State buffer;
       vda5050pp::core::Instance::ref().getStatusManager().dumpTo(buffer);
 
-      REQUIRE(buffer.informations.size() == 2);
-      REQUIRE(buffer.informations[0] == test_info1);
-      REQUIRE(buffer.informations[1] == test_info2);
+      REQUIRE(buffer.information.size() == 2);
+      REQUIRE(buffer.information[0] == test_info1);
+      REQUIRE(buffer.information[1] == test_info2);
     }
 
     WHEN("InfosAlter event is dispatched") {
@@ -283,9 +283,9 @@ TEST_CASE("Behaviour of AGV side Status events", "[event][status]") {
         vda5050pp::core::Instance::ref().getStatusManager().dumpTo(buffer);
 
         REQUIRE(alter_fn_called);
-        REQUIRE(buffer.informations.size() == 2);
-        REQUIRE(buffer.informations[0] == test_info2);
-        REQUIRE(buffer.informations[1] == test_info1);
+        REQUIRE(buffer.information.size() == 2);
+        REQUIRE(buffer.information[0] == test_info2);
+        REQUIRE(buffer.information[1] == test_info1);
       }
     }
   }

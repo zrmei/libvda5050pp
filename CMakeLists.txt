@@ -22,7 +22,7 @@ if(CMAKE_GENERATOR MATCHES "Ninja")
 endif()
 
 project(libvda5050++
-    VERSION 2.3.0
+    VERSION 2.4.0
     DESCRIPTION "Helper library for building VDA 5050 compliant software"
     LANGUAGES CXX)
 

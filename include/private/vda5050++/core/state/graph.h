@@ -157,6 +157,13 @@ public:
   ///\return std::optional<GraphElement> the current goal
   std::optional<GraphElement> currentGoal() const noexcept(false);
 
+  ///
+  ///\brief Get the current map of the AGV if it is here, otherwise the first graph element's map
+  ///
+  ///\return std::optional<std::string_view> if the map is set in the graph
+  ///
+  std::optional<std::string_view> currentMap() const;
+
   /// \brief Set the position of the AGV
   /// \param seq_id  the node sequence id, last visited
   ///\throws vda5050pp::VDA5050PPInvalidArgument, if seq is not on the graph, if seq is part of the

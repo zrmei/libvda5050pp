@@ -202,6 +202,15 @@ The QueryEventHandler sub config contains the settings for default
 | default_accept_zone_set_success | The default success the accept zone set query.        | yes      |
 | default_zone_sets               | The default set of zone sets, which will be accepted. | yes      |
 
+### `[module.StateEventHandler]` subtable
+
+The StateEventHandler sub config currently contains how to handle mapIds.
+
+| key                         | description                                              | optional | default |
+| --------------------------- | -------------------------------------------------------- | -------- | ------- |
+| default_agv_position_map    | The default map for the AGVPosition, if it was not set.  | yes      | -       |
+| use_agv_position_from_order | If true, set the map for AGVPosition based on the order. | no       | `false` |
+
 ### `[module.StateUpdateTimer]` subtable
 
 The StateUpdateTimer sub config contains the maximum interval of state messages.

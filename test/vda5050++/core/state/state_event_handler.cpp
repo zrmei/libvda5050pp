@@ -10,6 +10,7 @@
 #include <catch2/catch_all.hpp>
 
 #include "test/data.h"
+#include "vda5050++/config/state_subconfig.h"
 #include "vda5050++/core/common/type_traits.h"
 #include "vda5050++/core/instance.h"
 #include "vda5050++/sinks/status_sink.h"
@@ -48,6 +49,12 @@ TEST_CASE("core::state::StateEventHandler", "[core][state]") {
   cfg.refGlobalConfig().useWhiteList();
   cfg.refGlobalConfig().bwListModule(vda5050pp::core::module_keys::k_state_event_handler_key);
   cfg.refGlobalConfig().refEventManagerOptions().synchronous_event_dispatch = true;
+  cfg.lookupModuleConfigAs<vda5050pp::config::StateSubConfig>(
+         vda5050pp::core::module_keys::k_state_event_handler_key)
+      ->setDefaultAgvPositionMap("default-map");
+  cfg.lookupModuleConfigAs<vda5050pp::config::StateSubConfig>(
+         vda5050pp::core::module_keys::k_state_event_handler_key)
+      ->setUseAgvPositionFromOrder(true);
   vda5050pp::core::Instance::reset();
   auto instance = vda5050pp::core::Instance::init(cfg).lock();
   using namespace test::data;
@@ -226,20 +233,73 @@ TEST_CASE("core::state::StateEventHandler", "[core][state]") {
   }
 
   WHEN("A NavigationStatusPosition event is dispatched") {
-    vda5050::AGVPosition pos;
-    pos.x = 1;
-    pos.y = 2;
+    WHEN("The position has a map") {
+      vda5050::AGVPosition pos;
+      pos.x = 1;
+      pos.y = 2;
+      pos.mapId = "my_map";
 
-    auto evt = std::make_shared<vda5050pp::events::NavigationStatusPosition>();
-    evt->position = pos;
+      auto evt = std::make_shared<vda5050pp::events::NavigationStatusPosition>();
+      evt->position = pos;
 
-    instance->getNavigationStatusManager().dispatch(evt);
+      instance->getNavigationStatusManager().dispatch(evt);
 
-    THEN("The status manager has the position") {
-      vda5050::State state;
-      instance->getStatusManager().dumpTo(state);
-      REQUIRE(state.agvPosition.has_value());
-      REQUIRE(state.agvPosition.value() == pos);
+      THEN("The status manager has the position with the correct map") {
+        vda5050::State state;
+        instance->getStatusManager().dumpTo(state);
+        REQUIRE(state.agvPosition.has_value());
+        REQUIRE(state.agvPosition.value() == pos);
+      }
+    }
+    WHEN("The position has no map") {
+      vda5050::AGVPosition pos;
+      pos.x = 1;
+      pos.y = 2;
+
+      auto evt = std::make_shared<vda5050pp::events::NavigationStatusPosition>();
+      evt->position = pos;
+
+      instance->getNavigationStatusManager().dispatch(evt);
+
+      THEN("The status manager has the position with the default map") {
+        vda5050::State state;
+        instance->getStatusManager().dumpTo(state);
+        REQUIRE(state.agvPosition.has_value());
+        REQUIRE(state.agvPosition->x == pos.x);
+        REQUIRE(state.agvPosition->y == pos.y);
+        REQUIRE(state.agvPosition->mapId == "default-map");
+      }
+    }
+    WHEN("The position has no map, but an order exists") {
+      auto n1 = std::make_shared<vda5050::Node>();
+      n1->nodeId = "n1";
+      n1->sequenceId = 0;
+      n1->released = true;
+      n1->nodePosition =
+          vda5050::NodePosition{0, 0, 0, std::nullopt, std::nullopt, "order-map", std::nullopt};
+      vda5050pp::core::Instance::ref().getOrderManager().replaceGraph(
+          vda5050pp::core::state::Graph({
+              vda5050pp::core::state::GraphElement(n1),
+          }),
+          "order");
+
+      vda5050::AGVPosition pos;
+      pos.x = 1;
+      pos.y = 2;
+
+      auto evt = std::make_shared<vda5050pp::events::NavigationStatusPosition>();
+      evt->position = pos;
+
+      instance->getNavigationStatusManager().dispatch(evt);
+
+      THEN("The status manager has the position with the order map") {
+        vda5050::State state;
+        instance->getStatusManager().dumpTo(state);
+        REQUIRE(state.agvPosition.has_value());
+        REQUIRE(state.agvPosition->x == pos.x);
+        REQUIRE(state.agvPosition->y == pos.y);
+        REQUIRE(state.agvPosition->mapId == "order-map");
+      }
     }
   }
 

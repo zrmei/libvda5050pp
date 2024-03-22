@@ -295,6 +295,21 @@ std::optional<GraphElement> Graph::currentGoal() const noexcept(false) {
   }
 }
 
+std::optional<std::string_view> Graph::currentMap() const {
+  GraphElement ge =
+      this->agvHere() ? this->at(this->agvPosition()) : this->at(this->bounds().first);
+
+  if (ge.isEdge()) {
+    ge = this->at(ge.getSequenceId() + 1);
+  }
+
+  if (ge.getNode()->nodePosition.has_value()) {
+    return ge.getNode()->nodePosition->mapId;
+  } else {
+    return std::nullopt;
+  }
+}
+
 void Graph::setAgvLastNodeSequenceId(GraphElement::SequenceId seq_id) noexcept(false) {
   auto it = this->graph_.find(seq_id);
 

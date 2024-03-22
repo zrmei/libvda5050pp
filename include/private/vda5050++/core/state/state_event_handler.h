@@ -101,6 +101,7 @@ public:
   void initialize(vda5050pp::core::Instance &instance) override;
   void deinitialize(vda5050pp::core::Instance &instance) override;
   std::string_view describe() const override;
+  std::shared_ptr<vda5050pp::config::ModuleSubConfig> generateSubConfig() const override;
 };
 
 }  // namespace vda5050pp::core::state

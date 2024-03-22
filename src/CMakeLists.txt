@@ -17,6 +17,7 @@ set(LIBVDA5050PP_SOURCES
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config/mqtt_subconfig.cpp
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config/node_reached_subconfig.cpp
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config/query_event_handler_subconfig.cpp
+  ${PROJECT_SOURCE_DIR}/src/vda5050++/config/state_subconfig.cpp
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config/state_update_timer_subconfig.cpp
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config/types.cpp
   ${PROJECT_SOURCE_DIR}/src/vda5050++/config/visualization_timer_subconfig.cpp

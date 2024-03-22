@@ -8,6 +8,7 @@
 
 #include <functional>
 
+#include "vda5050++/config/state_subconfig.h"
 #include "vda5050++/core/common/exception.h"
 using namespace vda5050pp::core::state;
 
@@ -141,7 +142,19 @@ void StateEventHandler::handleNavigationStatusPosition(
         MK_EX_CONTEXT("NavigationStatusPosition Event is empty"));
   }
 
-  Instance::ref().getStatusManager().setAGVPosition(data->position);
+  auto cfg = Instance::ref().getConfig().lookupModuleConfigAs<vda5050pp::config::StateSubConfig>(
+      module_keys::k_state_event_handler_key);
+
+  std::optional<std::string_view> map;
+
+  if (cfg->getUseAgvPositionFromOrder() && Instance::ref().getOrderManager().hasGraph()) {
+    map = Instance::ref().getOrderManager().getCurrentGraph().currentMap();
+  }
+
+  // Try to use order map, default map or ""
+  auto pos = data->position;
+  pos.mapId = map.value_or(cfg->getDefaultAgvPositionMap().value_or(""));
+  Instance::ref().getStatusManager().setAGVPosition(pos);
 }
 
 void StateEventHandler::handleNavigationStatusVelocity(
@@ -442,26 +455,26 @@ void StateEventHandler::initialize(vda5050pp::core::Instance &instance) {
   this->status_subscriber_->subscribe(
       std::bind(std::mem_fn(&StateEventHandler::handleLoadsAlter), this, std::placeholders::_1));
 
-  this->status_subscriber_->subscribe(
-      std::bind(std::mem_fn(&StateEventHandler::handleOperatingModeSet), this, std::placeholders::_1));
+  this->status_subscriber_->subscribe(std::bind(
+      std::mem_fn(&StateEventHandler::handleOperatingModeSet), this, std::placeholders::_1));
 
-  this->status_subscriber_->subscribe(
-      std::bind(std::mem_fn(&StateEventHandler::handleOperatingModeGet), this, std::placeholders::_1));
+  this->status_subscriber_->subscribe(std::bind(
+      std::mem_fn(&StateEventHandler::handleOperatingModeGet), this, std::placeholders::_1));
 
-  this->status_subscriber_->subscribe(
-      std::bind(std::mem_fn(&StateEventHandler::handleOperatingModeAlter), this, std::placeholders::_1));
+  this->status_subscriber_->subscribe(std::bind(
+      std::mem_fn(&StateEventHandler::handleOperatingModeAlter), this, std::placeholders::_1));
 
-  this->status_subscriber_->subscribe(
-      std::bind(std::mem_fn(&StateEventHandler::handleBatteryStateSet), this, std::placeholders::_1));
+  this->status_subscriber_->subscribe(std::bind(
+      std::mem_fn(&StateEventHandler::handleBatteryStateSet), this, std::placeholders::_1));
 
-  this->status_subscriber_->subscribe(
-      std::bind(std::mem_fn(&StateEventHandler::handleBatteryStateGet), this, std::placeholders::_1));
+  this->status_subscriber_->subscribe(std::bind(
+      std::mem_fn(&StateEventHandler::handleBatteryStateGet), this, std::placeholders::_1));
 
-  this->status_subscriber_->subscribe(
-      std::bind(std::mem_fn(&StateEventHandler::handleBatteryStateAlter), this, std::placeholders::_1));
+  this->status_subscriber_->subscribe(std::bind(
+      std::mem_fn(&StateEventHandler::handleBatteryStateAlter), this, std::placeholders::_1));
 
-  this->status_subscriber_->subscribe(
-      std::bind(std::mem_fn(&StateEventHandler::handleRequestNewBase), this, std::placeholders::_1));
+  this->status_subscriber_->subscribe(std::bind(
+      std::mem_fn(&StateEventHandler::handleRequestNewBase), this, std::placeholders::_1));
 
   this->status_subscriber_->subscribe(
       std::bind(std::mem_fn(&StateEventHandler::handleErrorAdd), this, std::placeholders::_1));
@@ -484,3 +497,7 @@ void StateEventHandler::deinitialize(vda5050pp::core::Instance &) {
 }
 
 std::string_view StateEventHandler::describe() const { return "StateEventHandler"; }
+
+std::shared_ptr<vda5050pp::config::ModuleSubConfig> StateEventHandler::generateSubConfig() const {
+  return std::make_shared<vda5050pp::config::StateSubConfig>();
+}

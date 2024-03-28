@@ -59,7 +59,7 @@ TEST_CASE("core::common::fromActionDeclaration ", "[core][common]") {
       REQUIRE(to.actionParameters->at(3).key == p4.key);
       REQUIRE(to.actionParameters->at(0).valueDataType == vda5050::ValueDataType::INTEGER);
       REQUIRE(to.actionParameters->at(1).valueDataType == vda5050::ValueDataType::STRING);
-      REQUIRE(to.actionParameters->at(2).valueDataType == vda5050::ValueDataType::BOOL);
+      REQUIRE(to.actionParameters->at(2).valueDataType == vda5050::ValueDataType::BOOLEAN);
       REQUIRE(to.actionParameters->at(3).valueDataType == vda5050::ValueDataType::FLOAT);
       REQUIRE_FALSE(to.actionParameters->at(0).isOptional.value());
       REQUIRE_FALSE(to.actionParameters->at(1).isOptional.value());

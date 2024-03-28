@@ -22,7 +22,7 @@ static vda5050::ValueDataType convertDatatype(
     vda5050pp::agv_description::ParameterValueType type) noexcept(false) {
   switch (type) {
     case vda5050pp::agv_description::ParameterValueType::k_boolean:
-      return vda5050::ValueDataType::BOOL;
+      return vda5050::ValueDataType::BOOLEAN;
     case vda5050pp::agv_description::ParameterValueType::k_custom:
       return vda5050::ValueDataType::OBJECT;
     case vda5050pp::agv_description::ParameterValueType::k_float:

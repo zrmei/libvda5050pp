@@ -104,6 +104,8 @@ void StateUpdateTimer::initialize(vda5050pp::core::Instance &instance) {
 }
 
 void StateUpdateTimer::deinitialize(vda5050pp::core::Instance &) {
+  this->last_sent_ = TimePointT();
+  this->next_scheduled_update_ = TimePointT();
   this->state_subscriber_.reset();
   getStateUpdateTimerLogger()->debug("thread_.stop()");
   this->thread_.stop();

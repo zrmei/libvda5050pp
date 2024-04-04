@@ -128,6 +128,17 @@ static void assertNavigation(EventAsserter<vda5050pp::events::NavigationNextNode
   }
 }
 
+static void assertNavigationSegment(
+    EventAsserter<vda5050pp::events::NavigationUpcomingSegment> &asserter,
+    decltype(vda5050::Node::sequenceId) begin, decltype(vda5050::Node::sequenceId) end) {
+  THEN(fmt::format("A NavigationUpcomingSegment=(begin={}, end={}) is received", begin, end)) {
+    asserter.assertNow([begin, end](auto evt_ptr) {
+      REQUIRE(evt_ptr->begin_seq == begin);
+      REQUIRE(evt_ptr->end_seq == end);
+    });
+  }
+}
+
 static void assertOrderNewLastNodeId(
     EventAsserter<vda5050pp::core::events::OrderNewLastNodeId> &asserter,
     std::string_view last_node_id) {
@@ -194,12 +205,16 @@ TEST_CASE("core::order::Scheduler - only navigation", "[core][order]") {
       auto evt_navigation =
           EventAsserter<vda5050pp::events::NavigationNextNode>::forNavigationEvent(
               [](auto) { return true; });
+      auto evt_seg =
+          EventAsserter<vda5050pp::events::NavigationUpcomingSegment>::forNavigationEvent(
+              [](auto) { return true; });
 
       scheduler.enqueue(evt1);
       scheduler.update();
       assertState(vda5050pp::core::order::SchedulerStateType::k_active)(scheduler);
       assertOrderStatus(evt_order_status, vda5050pp::misc::OrderStatus::k_order_active);
       assertNavigation(evt_navigation, "n0", "e1");
+      assertNavigationSegment(evt_seg, 0, 0);
     }
     WHEN("Reaching the first node") {
       {
@@ -220,14 +235,18 @@ TEST_CASE("core::order::Scheduler - only navigation", "[core][order]") {
         auto evt_navigation =
             EventAsserter<vda5050pp::events::NavigationNextNode>::forNavigationEvent(
                 [](auto) { return true; });
+        auto evt_seg =
+            EventAsserter<vda5050pp::events::NavigationUpcomingSegment>::forNavigationEvent(
+                [](auto) { return true; });
         scheduler.enqueue(evt2);
         scheduler.enqueue(evt3);
         scheduler.update();
 
-        THEN("No events are generated") {
+        THEN("No order/nav events are generated") {
           evt_order_status.assertNone();
           evt_navigation.assertNone();
         }
+        assertNavigationSegment(evt_seg, 1, 4);
       }
 
       WHEN("The first node is reached") {
@@ -241,6 +260,9 @@ TEST_CASE("core::order::Scheduler - only navigation", "[core][order]") {
           auto evt_navigation =
               EventAsserter<vda5050pp::events::NavigationNextNode>::forNavigationEvent(
                   [](auto) { return true; });
+          auto evt_seg =
+              EventAsserter<vda5050pp::events::NavigationUpcomingSegment>::forNavigationEvent(
+                  [](auto) { return true; });
 
           THEN("Reaching future nodes throws") {
             REQUIRE_THROWS_AS(scheduler.navigationTransition(
@@ -251,6 +273,7 @@ TEST_CASE("core::order::Scheduler - only navigation", "[core][order]") {
           THEN("Order status is not updated") { evt_order_status.assertNone(); }
           assertNavigation(evt_navigation, "n2", "e3");
           assertOrderNewLastNodeId(evt_order_last_node, "n0");
+          evt_seg.assertNone();
         }
         WHEN("The second node is reached") {
           {
@@ -263,6 +286,9 @@ TEST_CASE("core::order::Scheduler - only navigation", "[core][order]") {
             auto evt_navigation =
                 EventAsserter<vda5050pp::events::NavigationNextNode>::forNavigationEvent(
                     [](auto) { return true; });
+            auto evt_seg =
+                EventAsserter<vda5050pp::events::NavigationUpcomingSegment>::forNavigationEvent(
+                    [](auto) { return true; });
 
             THEN("Reaching future nodes throws") {
               REQUIRE_THROWS_AS(scheduler.navigationTransition(
@@ -274,6 +300,7 @@ TEST_CASE("core::order::Scheduler - only navigation", "[core][order]") {
             THEN("Order status is not updated") { evt_order_status.assertNone(); }
             assertNavigation(evt_navigation, "n4", "e5");
             assertOrderNewLastNodeId(evt_order_last_node, "n2");
+            evt_seg.assertNone();
           }
           WHEN("The third node is reached") {
             {
@@ -357,6 +384,8 @@ TEST_CASE("core::order::Scheduler - only navigation with actions", "[core][order
         [](auto) { return true; });
     auto evt_navigation = EventAsserter<vda5050pp::events::NavigationNextNode>::forNavigationEvent(
         [](auto) { return true; });
+    auto evt_seg = EventAsserter<vda5050pp::events::NavigationUpcomingSegment>::forNavigationEvent(
+        [](auto) { return true; });
 
     scheduler.enqueue(evt1);
     scheduler.enqueue(evt1a);
@@ -368,6 +397,7 @@ TEST_CASE("core::order::Scheduler - only navigation with actions", "[core][order
 
     assertOrderStatus(evt_order_status, vda5050pp::misc::OrderStatus::k_order_active);
     assertNavigation(evt_navigation, "n0", "e1");
+    assertNavigationSegment(evt_seg, 0, 0);
   }
 
   WHEN("The first node is reached") {
@@ -445,6 +475,9 @@ TEST_CASE("core::order::Scheduler - only navigation with actions", "[core][order
                 [](auto evt) { return evt->action_id == "a21"; });
             auto evt_a22 = EventAsserter<vda5050pp::events::ActionStart>::forActionEvent(
                 [](auto evt) { return evt->action_id == "a22"; });
+            auto evt_seg =
+                EventAsserter<vda5050pp::events::NavigationUpcomingSegment>::forNavigationEvent(
+                    [](auto) { return true; });
             scheduler.actionTransition("a13",
                                        vda5050pp::core::order::ActionTransition::isFinished());
             THEN("No order status event was generated") { evt_order_status.assertNone(); }
@@ -452,6 +485,7 @@ TEST_CASE("core::order::Scheduler - only navigation with actions", "[core][order
             assertNavigation(evt_navigation, "n2", "e3");
             assertActionEvent<vda5050pp::events::ActionStart>(evt_a21, "a21");
             assertActionEvent<vda5050pp::events::ActionStart>(evt_a22, "a22");
+            assertNavigationSegment(evt_seg, 2, 4);
           }
 
           WHEN("n2 is reached") {

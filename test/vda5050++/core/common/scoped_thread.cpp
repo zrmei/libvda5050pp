@@ -78,3 +78,26 @@ TEST_CASE("core::common::ScopedThread - Future check", "[core][common]") {
     }
   }
 }
+
+TEST_CASE("core::common::ScopedThread - Reset", "[core][common]") {
+  WHEN("A scoped thread is created") {
+    bool called_1 = false;
+    ScopedThread<void()> thread([&called_1](StopToken) { called_1 = true; }, true);
+
+    THEN("The thread executes") {
+      thread.join();
+      REQUIRE(called_1);
+
+      WHEN("It is reset") {
+        bool called_2 = false;
+        thread.reset([&called_2](StopToken) { called_2 = true; });
+
+        THEN("It can be started again") {
+          thread.start();
+          thread.join();
+          REQUIRE(called_2);
+        }
+      }
+    }
+  }
+}

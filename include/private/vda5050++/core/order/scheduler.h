@@ -213,6 +213,7 @@ protected:
   void updateFetchNext();
   void updateFetchNext(std::shared_ptr<vda5050pp::core::events::YieldActionGroupEvent> evt);
   void updateFetchNext(std::shared_ptr<vda5050pp::core::events::YieldNavigationStepEvent> evt);
+  void doPatchSegment();
   void doInterrupt();
   void updateFetchNextInterrupt();
 

@@ -169,6 +169,7 @@ void OrderManager::replaceGraph(Graph &&new_graph, std::string_view order_id,
 
 void OrderManager::replaceGraph(Graph &&new_graph, std::string_view order_id) noexcept(false) {
   std::unique_lock lock(this->mutex_);
+  this->last_node_sequence_id_ = 0;
   this->replaceGraph(std::move(new_graph), order_id, lock);
 }
 
@@ -202,9 +203,11 @@ void OrderManager::setAGVLastNode(uint32_t agv_seq_id) noexcept(false) {
   this->last_node_id_ = this->graph_->at(this->last_node_sequence_id_).getId();
 }
 
-void OrderManager::setAGVLastNodeId(std::string_view last_node_id) noexcept(false) {
+bool OrderManager::setAGVLastNodeId(std::string_view last_node_id) noexcept(false) {
   std::unique_lock lock(this->mutex_);
+  bool changed = this->last_node_id_ != last_node_id;
   this->last_node_id_ = last_node_id;
+  return changed;
 }
 
 void OrderManager::dumpTo(vda5050::State &state) const {

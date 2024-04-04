@@ -40,6 +40,7 @@ void ActionEventHandler::initialize(vda5050pp::core::Instance &instance) noexcep
 
 void ActionEventHandler::deinitialize(vda5050pp::core::Instance &) noexcept(false) {
   this->subscriber_.reset();
+  this->handled_actions_.clear();
 }
 
 std::string_view ActionEventHandler::describe() const { return "ActionEventHandler"; }

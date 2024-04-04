@@ -38,9 +38,11 @@ void StatusManager::resetVelocity() {
   this->velocity_.reset();
 }
 
-void StatusManager::setDriving(bool driving) {
+bool StatusManager::setDriving(bool driving) {
   std::unique_lock lock(this->mutex_);
+  bool changed = this->driving_ != driving;
   this->driving_ = driving;
+  return changed;
 }
 
 void StatusManager::setDistanceSinceLastNode(double distance_since_last_node) {
@@ -53,7 +55,7 @@ void StatusManager::resetDistanceSinceLastNode() {
   this->distance_since_last_node_.reset();
 }
 
-void StatusManager::addLoad(const vda5050::Load &load) {
+bool StatusManager::addLoad(const vda5050::Load &load) {
   std::unique_lock lock(this->mutex_);
 
   if (!this->loads_.has_value()) {
@@ -61,19 +63,25 @@ void StatusManager::addLoad(const vda5050::Load &load) {
   } else {
     this->loads_->push_back(load);
   }
+
+  return true;
 }
 
-void StatusManager::removeLoad(std::string_view load_id) {
+bool StatusManager::removeLoad(std::string_view load_id) {
   std::unique_lock lock(this->mutex_);
 
   if (!this->loads_.has_value()) {
-    return;
+    return false;
   }
 
   auto match_id = [load_id](const vda5050::Load &load) { return load.loadId == load_id; };
 
+  auto before_size = this->loads_->size();
+
   this->loads_->erase(std::remove_if(this->loads_->begin(), this->loads_->end(), match_id),
                       this->loads_->end());
+
+  return this->loads_->size() != before_size;
 }
 
 const std::vector<vda5050::Load> &StatusManager::getLoads() {
@@ -89,9 +97,11 @@ const std::vector<vda5050::Load> &StatusManager::getLoads() {
   }
 }
 
-void StatusManager::setOperatingMode(vda5050::OperatingMode operating_mode) {
+bool StatusManager::setOperatingMode(vda5050::OperatingMode operating_mode) {
   std::unique_lock lock(this->mutex_);
+  bool changed = this->operating_mode_ != operating_mode;
   this->operating_mode_ = operating_mode;
+  return changed;
 }
 
 vda5050::OperatingMode StatusManager::getOperatingMode() {
@@ -114,9 +124,10 @@ void StatusManager::requestNewBase() {
   this->new_base_request_ = true;
 }
 
-void StatusManager::addError(const vda5050::Error &error) {
+bool StatusManager::addError(const vda5050::Error &error) {
   std::unique_lock lock(this->mutex_);
   this->errors_.push_back(error);
+  return true;
 }
 
 void StatusManager::addInfo(const vda5050::Info &info) {

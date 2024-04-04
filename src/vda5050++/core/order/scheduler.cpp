@@ -24,6 +24,7 @@ SchedulerIdle::SchedulerIdle(Scheduler &scheduler, bool notify) : SchedulerState
     evt->status = vda5050pp::misc::OrderStatus::k_order_idle;
     Instance::ref().getOrderEventManager().dispatch(evt);
   }
+  this->scheduler().current_segment_ = std::nullopt;
 }
 std::pair<std::unique_ptr<SchedulerState>, bool> SchedulerIdle::cancel() {
   throw vda5050pp::VDA5050PPInvalidState(MK_EX_CONTEXT("Cannot cancel during idle"));
@@ -501,13 +502,17 @@ void Scheduler::updateFetchNext(
     return;
   }
 
+  // Only allow actions that are non blocking if driving
   if (this->navigation_task_ != nullptr &&
       evt->blocking_type_ceiling != vda5050::BlockingType::NONE) {
     return;
   }
 
-  this->current_action_blocking_type_ = evt->blocking_type_ceiling;
+  // Close current segment, because it wont be increased
+  this->current_segment_ = std::nullopt;
 
+  // All guards passed -> activate actions
+  this->current_action_blocking_type_ = evt->blocking_type_ceiling;
   for (const auto &action : evt->actions) {
     auto task = std::make_shared<ActionTask>(action);
     this->active_action_tasks_by_id_[action->actionId] = task;
@@ -522,6 +527,9 @@ void Scheduler::updateFetchNext(
 void Scheduler::updateFetchNext(
     std::shared_ptr<vda5050pp::core::events::YieldNavigationStepEvent> evt) {
   if (this->navigation_task_ != nullptr) {
+    // If there is a running navigation task, it already has a segment.
+    // This segment must be extended and a patch event must be dispatched
+    this->doPatchSegment();
     return;
   }
 
@@ -536,25 +544,26 @@ void Scheduler::updateFetchNext(
 
   this->navigation_task_ = std::make_shared<NavigationTask>(evt->goal_node, evt->via_edge);
 
-  // Check if the segment begin must be drawn
-  if (!this->current_segment_.has_value() ||
-      this->current_segment_->second == evt->goal_node->sequenceId) {
-    this->current_segment_ = std::make_pair(evt->goal_node->sequenceId - 2, 0);
-  } else {
-    // Nothing to do
+  // Check of the segment is up to date
+  if (this->current_segment_.has_value() &&
+      this->current_segment_->second >= evt->goal_node->sequenceId) {
+    // Nothing to do, just proceed with fetching
     this->rcv_evt_queue_.pop_front();
     this->navigation_task_->transition(NavigationTransition::doStart());
     return this->updateFetchNext();
   }
 
+  // Update current segment
+  this->current_segment_ = std::make_pair(evt->goal_node->sequenceId, evt->goal_node->sequenceId);
+
   // prefetch max reachable sequence id from queue
   for (const auto &p_evt : this->rcv_evt_queue_) {
     if (p_evt->getId() == vda5050pp::core::events::InterpreterEventType::k_yield_navigation_step) {
       auto nav = std::static_pointer_cast<vda5050pp::core::events::YieldNavigationStepEvent>(p_evt);
+      this->current_segment_->second = nav->goal_node->sequenceId;
       if (nav->has_stop_at_goal_hint) {
         break;
       }
-      this->current_segment_->second = nav->goal_node->sequenceId;
     }
   }
 
@@ -563,6 +572,34 @@ void Scheduler::updateFetchNext(
 
   this->rcv_evt_queue_.pop_front();
   this->updateFetchNext();
+}
+
+void Scheduler::doPatchSegment() {
+  if (this->navigation_task_ == nullptr || this->current_segment_ == std::nullopt) {
+    return;
+  }
+
+  auto old_segment_last = this->current_segment_->second;
+
+  // prefetch max reachable sequence id from queue
+  for (const auto &p_evt : this->rcv_evt_queue_) {
+    if (p_evt->getId() == vda5050pp::core::events::InterpreterEventType::k_yield_navigation_step) {
+      auto nav = std::static_pointer_cast<vda5050pp::core::events::YieldNavigationStepEvent>(p_evt);
+      this->current_segment_->second = nav->goal_node->sequenceId;
+      if (nav->has_stop_at_goal_hint) {
+        break;
+      }
+    }
+  }
+
+  if (this->current_segment_->second == old_segment_last) {
+    return;  // Nothing to do
+  }
+
+  auto evt = std::make_shared<vda5050pp::events::NavigationUpcomingSegment>();
+  evt->begin_seq = old_segment_last + 1;
+  evt->end_seq = this->current_segment_->second;
+  Instance::ref().getNavigationEventManager().dispatch(evt);
 }
 
 void Scheduler::doInterrupt() {

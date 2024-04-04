@@ -185,11 +185,11 @@ void StateEventHandler::handleNavigationStatusDriving(
         MK_EX_CONTEXT("NavigationStatusDriving Event is empty"));
   }
 
-  Instance::ref().getStatusManager().setDriving(data->is_driving);
-
-  auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
-  update->urgency = StateUpdateUrgency::high();
-  Instance::ref().getStateEventManager().dispatch(update);
+  if (Instance::ref().getStatusManager().setDriving(data->is_driving)) {
+    auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
+    update->urgency = StateUpdateUrgency::high();
+    Instance::ref().getStateEventManager().dispatch(update);
+  }
 }
 
 void StateEventHandler::handleNavigationStatusNodeReached(
@@ -203,11 +203,11 @@ void StateEventHandler::handleNavigationStatusNodeReached(
     return;
   }
 
-  Instance::ref().getOrderManager().setAGVLastNodeId(*data->last_node_id);
-
-  auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
-  update->urgency = StateUpdateUrgency::high();
-  Instance::ref().getStateEventManager().dispatch(update);
+  if (Instance::ref().getOrderManager().setAGVLastNodeId(*data->last_node_id)) {
+    auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
+    update->urgency = StateUpdateUrgency::high();
+    Instance::ref().getStateEventManager().dispatch(update);
+  }
 }
 
 void StateEventHandler::handleLoadAdd(std::shared_ptr<vda5050pp::events::LoadAdd> data) const
@@ -216,11 +216,11 @@ void StateEventHandler::handleLoadAdd(std::shared_ptr<vda5050pp::events::LoadAdd
     throw vda5050pp::VDA5050PPInvalidEventData(MK_EX_CONTEXT("LoadAdd Event is empty"));
   }
 
-  vda5050pp::core::Instance::ref().getStatusManager().addLoad(data->load);
-
-  auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
-  update->urgency = StateUpdateUrgency::high();
-  Instance::ref().getStateEventManager().dispatch(update);
+  if (vda5050pp::core::Instance::ref().getStatusManager().addLoad(data->load)) {
+    auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
+    update->urgency = StateUpdateUrgency::high();
+    Instance::ref().getStateEventManager().dispatch(update);
+  }
 }
 
 void StateEventHandler::handleLoadRemove(std::shared_ptr<vda5050pp::events::LoadRemove> data) const
@@ -229,11 +229,11 @@ void StateEventHandler::handleLoadRemove(std::shared_ptr<vda5050pp::events::Load
     throw vda5050pp::VDA5050PPInvalidEventData(MK_EX_CONTEXT("LoadRemove Event is empty"));
   }
 
-  vda5050pp::core::Instance::ref().getStatusManager().removeLoad(data->load_id);
-
-  auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
-  update->urgency = StateUpdateUrgency::high();
-  Instance::ref().getStateEventManager().dispatch(update);
+  if (vda5050pp::core::Instance::ref().getStatusManager().removeLoad(data->load_id)) {
+    auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
+    update->urgency = StateUpdateUrgency::high();
+    Instance::ref().getStateEventManager().dispatch(update);
+  }
 }
 
 void StateEventHandler::handleLoadsGet(std::shared_ptr<vda5050pp::events::LoadsGet> data) const
@@ -256,11 +256,11 @@ void StateEventHandler::handleLoadsAlter(std::shared_ptr<vda5050pp::events::Load
     throw vda5050pp::VDA5050PPInvalidEventData(MK_EX_CONTEXT("LoadsAlter Event is empty"));
   }
 
-  vda5050pp::core::Instance::ref().getStatusManager().loadsAlter(data->alter_function);
-
-  auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
-  update->urgency = StateUpdateUrgency::high();
-  Instance::ref().getStateEventManager().dispatch(update);
+  if (vda5050pp::core::Instance::ref().getStatusManager().loadsAlter(data->alter_function)) {
+    auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
+    update->urgency = StateUpdateUrgency::high();
+    Instance::ref().getStateEventManager().dispatch(update);
+  }
 }
 
 void StateEventHandler::handleOperatingModeSet(
@@ -269,11 +269,11 @@ void StateEventHandler::handleOperatingModeSet(
     throw vda5050pp::VDA5050PPInvalidEventData(MK_EX_CONTEXT("OperatingModeSet Event is empty"));
   }
 
-  vda5050pp::core::Instance::ref().getStatusManager().setOperatingMode(data->operating_mode);
-
-  auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
-  update->urgency = StateUpdateUrgency::high();
-  Instance::ref().getStateEventManager().dispatch(update);
+  if (vda5050pp::core::Instance::ref().getStatusManager().setOperatingMode(data->operating_mode)) {
+    auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
+    update->urgency = StateUpdateUrgency::high();
+    Instance::ref().getStateEventManager().dispatch(update);
+  }
 }
 
 void StateEventHandler::handleOperatingModeGet(
@@ -296,11 +296,12 @@ void StateEventHandler::handleOperatingModeAlter(
     throw vda5050pp::VDA5050PPInvalidEventData(MK_EX_CONTEXT("OperatingModeAlter Event is empty"));
   }
 
-  vda5050pp::core::Instance::ref().getStatusManager().operatingModeAlter(data->alter_function);
-
-  auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
-  update->urgency = StateUpdateUrgency::high();
-  Instance::ref().getStateEventManager().dispatch(update);
+  if (vda5050pp::core::Instance::ref().getStatusManager().operatingModeAlter(
+          data->alter_function)) {
+    auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
+    update->urgency = StateUpdateUrgency::high();
+    Instance::ref().getStateEventManager().dispatch(update);
+  }
 }
 
 void StateEventHandler::handleBatteryStateSet(
@@ -354,11 +355,11 @@ void StateEventHandler::handleErrorAdd(std::shared_ptr<vda5050pp::events::ErrorA
     throw vda5050pp::VDA5050PPInvalidEventData(MK_EX_CONTEXT("ErrorAdd Event is empty"));
   }
 
-  vda5050pp::core::Instance::ref().getStatusManager().addError(data->error);
-
-  auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
-  update->urgency = StateUpdateUrgency::high();
-  Instance::ref().getStateEventManager().dispatch(update);
+  if (vda5050pp::core::Instance::ref().getStatusManager().addError(data->error)) {
+    auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
+    update->urgency = StateUpdateUrgency::high();
+    Instance::ref().getStateEventManager().dispatch(update);
+  }
 }
 
 void StateEventHandler::handleErrorsAlter(
@@ -367,11 +368,11 @@ void StateEventHandler::handleErrorsAlter(
     throw vda5050pp::VDA5050PPInvalidEventData(MK_EX_CONTEXT("ErrorsAlter Event is empty"));
   }
 
-  vda5050pp::core::Instance::ref().getStatusManager().alterErrors(data->alter_function);
-
-  auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
-  update->urgency = StateUpdateUrgency::high();
-  Instance::ref().getStateEventManager().dispatch(update);
+  if (vda5050pp::core::Instance::ref().getStatusManager().alterErrors(data->alter_function)) {
+    auto update = std::make_shared<vda5050pp::core::events::RequestStateUpdateEvent>();
+    update->urgency = StateUpdateUrgency::high();
+    Instance::ref().getStateEventManager().dispatch(update);
+  }
 }
 
 void StateEventHandler::handleInfoAdd(std::shared_ptr<vda5050pp::events::InfoAdd> data) const

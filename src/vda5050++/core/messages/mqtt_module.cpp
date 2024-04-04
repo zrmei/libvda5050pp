@@ -69,6 +69,7 @@ mqtt::will_options MqttModule::getWill() {
 void MqttModule::useMqttOptions(const vda5050pp::config::MqttOptions &opts) {
   this->server_ = opts.server;
 
+  this->connect_opts_ = mqtt::connect_options();
   this->connect_opts_.set_mqtt_version(4);
   this->connect_opts_.set_clean_session(false);
   this->connect_opts_.set_user_name(opts.username.value_or(""));
@@ -219,7 +220,7 @@ void MqttModule::disconnect() {
       connection.connectionState = vda5050::ConnectionState::OFFLINE;
       this->fillHeaderConnection(connection.header);
       this->sendConnection(connection);
-      this->mqtt_client_->disconnect();
+      this->mqtt_client_->disconnect()->wait();
       this->state_ = State::k_offline;
       auto evt = std::make_shared<vda5050pp::core::events::ConnectionChangedEvent>();
       evt->status = vda5050pp::misc::ConnectionStatus::k_offline;
@@ -382,6 +383,7 @@ void MqttModule::deinitialize(vda5050pp::core::Instance &) {
   this->m_subscriber_.reset();
   this->c_subscriber_.reset();
   this->mqtt_client_.reset();
+  this->state_ = State::k_constructed;
 }
 
 std::string_view MqttModule::describe() const { return "MqttModule"; }

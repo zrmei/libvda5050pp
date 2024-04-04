@@ -103,9 +103,10 @@ public:
   }
 
   void reset(std::function<BoundFnT> fn, ArgsT... args) {
-    auto bound_fn = std::bind(fn, StopToken(this->stop_token_), args...);
-    packaged_task_ptr_ = std::make_unique<std::packaged_task<ResultT()>>(bound_fn);
     this->thread_ptr_.reset();
+    this->stop_token_ = StopToken();
+    auto bound_fn = std::bind(fn, StopToken(this->stop_token_), args...);
+    this->packaged_task_ptr_ = std::make_unique<std::packaged_task<ResultT()>>(bound_fn);
   }
 
   ///

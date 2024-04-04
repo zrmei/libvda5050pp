@@ -233,9 +233,6 @@ Graph Graph::subgraph(GraphElement::SequenceId first, GraphElement::SequenceId l
   auto f = this->graph_.find(first);
   auto l = this->graph_.find(last);
 
-  if (first == last) {
-    throw vda5050pp::VDA5050PPInvalidArgument(MK_EX_CONTEXT("Requesting empty subgraph"));
-  }
   if (last < first) {
     throw vda5050pp::VDA5050PPInvalidArgument(MK_EX_CONTEXT("First must be smaller then Last"));
   }

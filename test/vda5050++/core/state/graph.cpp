@@ -369,7 +369,6 @@ TEST_CASE("core::state::Graph behaviour", "[core][state]") {
       REQUIRE_THROWS_AS(g1.subgraph(0, 5), vda5050pp::VDA5050PPInvalidArgument);
       REQUIRE_THROWS_AS(g1.subgraph(1, 5), vda5050pp::VDA5050PPInvalidArgument);
       REQUIRE_THROWS_AS(g1.subgraph(3, 2), vda5050pp::VDA5050PPInvalidArgument);
-      REQUIRE_THROWS_AS(g1.subgraph(3, 3), vda5050pp::VDA5050PPInvalidArgument);
       REQUIRE_THROWS_AS(g2.subgraph(0, 3), vda5050pp::VDA5050PPInvalidArgument);
       REQUIRE_THROWS_AS(g2.subgraph(0, 6), vda5050pp::VDA5050PPInvalidArgument);
       REQUIRE_THROWS_AS(g2.subgraph(1, 7), vda5050pp::VDA5050PPInvalidArgument);

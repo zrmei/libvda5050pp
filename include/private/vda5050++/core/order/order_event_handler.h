@@ -19,7 +19,7 @@ namespace vda5050pp::core::order {
 
 class OrderEventHandler : public vda5050pp::core::Module {
 private:
-  vda5050pp::core::order::Scheduler scheduler_;
+  std::optional<vda5050pp::core::order::Scheduler> scheduler_;
 
   std::optional<GenericEventManager<vda5050pp::core::events::InterpreterEvent>::ScopedSubscriber>
       interpreter_subscriber_;

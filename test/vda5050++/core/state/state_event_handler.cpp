@@ -415,12 +415,12 @@ TEST_CASE("core::state::StateEventHandler", "[core][state]") {
       true);
 
   auto operating_mode_set = std::make_shared<vda5050pp::events::OperatingModeSet>();
-  operating_mode_set->operating_mode = vda5050::OperatingMode::SERVICE;
+  operating_mode_set->operating_mode = vda5050::OperatingMode::TEACHIN;
 
   quickStateEventTest(
       operating_mode_set,
       [](const vda5050::State &s) {
-        REQUIRE(s.operatingMode == vda5050::OperatingMode::SERVICE);
+        REQUIRE(s.operatingMode == vda5050::OperatingMode::TEACHIN);
 
         auto operating_mode_alter = std::make_shared<vda5050pp::events::OperatingModeAlter>();
         operating_mode_alter->alter_function = [](auto) {

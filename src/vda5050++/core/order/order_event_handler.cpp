@@ -17,7 +17,7 @@ void OrderEventHandler::handleYieldNormal(
   }
 
   try {
-    this->scheduler_.enqueue(evt);
+    this->scheduler_->enqueue(evt);
   } catch (const vda5050pp::VDA5050PPError &e) {
     getOrderLogger()->error("Scheduler threw an exception: {}", e.dump());
     // TODO: global error state?
@@ -31,7 +31,7 @@ void OrderEventHandler::handleYieldInstantActionGroup(
   }
 
   try {
-    this->scheduler_.enqueueInterruptActions(evt);
+    this->scheduler_->enqueueInterruptActions(evt);
   } catch (const vda5050pp::VDA5050PPError &e) {
     getOrderLogger()->error("Scheduler threw an exception: {}", e.dump());
     // TODO: global error state?
@@ -57,7 +57,7 @@ void OrderEventHandler::handleInterpreterDone(
   }
 
   try {
-    this->scheduler_.update();
+    this->scheduler_->update();
   } catch (const vda5050pp::VDA5050PPError &e) {
     getOrderLogger()->error("Scheduler threw an exception: {}", e.dump());
     // TODO: global error state?
@@ -71,7 +71,7 @@ void OrderEventHandler::handleActionFailed(
   }
 
   try {
-    this->scheduler_.actionTransition(evt->action_id, ActionTransition::isFailed());
+    this->scheduler_->actionTransition(evt->action_id, ActionTransition::isFailed());
   } catch (const vda5050pp::VDA5050PPError &e) {
     getOrderLogger()->error("Scheduler threw an exception: {}", e.dump());
     // TODO: global error state?
@@ -84,8 +84,8 @@ void OrderEventHandler::handleActionFinished(
   }
 
   try {
-    this->scheduler_.actionTransition(evt->action_id,
-                                      ActionTransition::isFinished(evt->action_result));
+    this->scheduler_->actionTransition(evt->action_id,
+                                       ActionTransition::isFinished(evt->action_result));
   } catch (const vda5050pp::VDA5050PPError &e) {
     getOrderLogger()->error("Scheduler threw an exception: {}", e.dump());
     // TODO: global error state?
@@ -98,7 +98,7 @@ void OrderEventHandler::handleActionInitializing(
   }
 
   try {
-    this->scheduler_.actionTransition(evt->action_id, ActionTransition::isInitializing());
+    this->scheduler_->actionTransition(evt->action_id, ActionTransition::isInitializing());
   } catch (const vda5050pp::VDA5050PPError &e) {
     getOrderLogger()->error("Scheduler threw an exception: {}", e.dump());
     // TODO: global error state?
@@ -111,7 +111,7 @@ void OrderEventHandler::handleActionPaused(
   }
 
   try {
-    this->scheduler_.actionTransition(evt->action_id, ActionTransition::isPaused());
+    this->scheduler_->actionTransition(evt->action_id, ActionTransition::isPaused());
   } catch (const vda5050pp::VDA5050PPError &e) {
     getOrderLogger()->error("Scheduler threw an exception: {}", e.dump());
     // TODO: global error state?
@@ -124,7 +124,7 @@ void OrderEventHandler::handleActionRunning(
   }
 
   try {
-    this->scheduler_.actionTransition(evt->action_id, ActionTransition::isRunning());
+    this->scheduler_->actionTransition(evt->action_id, ActionTransition::isRunning());
   } catch (const vda5050pp::VDA5050PPError &e) {
     getOrderLogger()->error("Scheduler threw an exception: {}", e.dump());
     // TODO: global error state?
@@ -154,7 +154,7 @@ void OrderEventHandler::handleNavigationControl(
   }
 
   try {
-    this->scheduler_.navigationTransition(*transition);
+    this->scheduler_->navigationTransition(*transition);
   } catch (const vda5050pp::VDA5050PPError &e) {
     getOrderLogger()->error("Scheduler threw an exception: {}", e.dump());
     // TODO: global error state?
@@ -172,7 +172,7 @@ void OrderEventHandler::handleNavigationNode(
   }
 
   try {
-    this->scheduler_.navigationTransition(NavigationTransition::toSeqId(*evt->node_seq_id));
+    this->scheduler_->navigationTransition(NavigationTransition::toSeqId(*evt->node_seq_id));
   } catch (const vda5050pp::VDA5050PPError &e) {
     getOrderLogger()->error("Scheduler threw an exception: {}", e.dump());
     // TODO: global error state?
@@ -218,7 +218,7 @@ void OrderEventHandler::handleOrderControl(
   using Status = vda5050pp::core::events::InterpreterOrderControl::Status;
   switch (evt->status) {
     case Status::k_cancel:
-      this->scheduler_.cancel();
+      this->scheduler_->cancel();
       break;
     case Status::k_pause: {
       auto result = queryPauseResume<vda5050pp::events::QueryPauseable>();
@@ -228,7 +228,7 @@ void OrderEventHandler::handleOrderControl(
         getOrderLogger()->info("QueryPauseable returned errors. Scheduler won't pause");
         return;
       }
-      this->scheduler_.pause();
+      this->scheduler_->pause();
       break;
     }
     case Status::k_resume: {
@@ -239,7 +239,7 @@ void OrderEventHandler::handleOrderControl(
         getOrderLogger()->info("QueryResumable returned errors. Scheduler won't resume");
         return;
       }
-      this->scheduler_.resume();
+      this->scheduler_->resume();
       break;
     }
     default:
@@ -249,6 +249,8 @@ void OrderEventHandler::handleOrderControl(
 }
 
 void OrderEventHandler::initialize(vda5050pp::core::Instance &instance) {
+  this->scheduler_.emplace();
+
   this->action_event_subscriber_ =
       instance.getActionStatusManager().getScopedActionStatusSubscriber();
   this->navigation_event_subscriber_ =
@@ -287,6 +289,7 @@ void OrderEventHandler::initialize(vda5050pp::core::Instance &instance) {
 }
 
 void OrderEventHandler::deinitialize(vda5050pp::core::Instance &) {
+  this->scheduler_.reset();
   this->interpreter_subscriber_.reset();
   this->action_event_subscriber_.reset();
   this->navigation_event_subscriber_.reset();

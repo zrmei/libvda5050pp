@@ -68,7 +68,7 @@ public:
   const Graph &getCurrentGraph() const noexcept(false);
   bool hasGraph() const;
   void setAGVLastNode(uint32_t seq_id) noexcept(false);
-  void setAGVLastNodeId(std::string_view last_node_id) noexcept(false);
+  bool setAGVLastNodeId(std::string_view last_node_id) noexcept(false);
   void dumpTo(vda5050::State &state) const;
   void clearGraph();
   void cancelWaitingActions();

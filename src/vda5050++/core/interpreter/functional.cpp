@@ -346,9 +346,6 @@ handleInitial(std::unique_ptr<EventIter> &&event_iter) noexcept(false) {
   if (n_it == it->getNodeEnd()) {
     throw vda5050pp::VDA5050PPInvalidArgument(MK_FN_EX_CONTEXT("No Nodes remaining"));
   }
-  if (e_it == it->getEdgeEnd()) {
-    throw vda5050pp::VDA5050PPInvalidArgument(MK_FN_EX_CONTEXT("No Edges remaining"));
-  }
 
   if (n_it->sequenceId < e_it->sequenceId && it->getOrderUpdateId() == 0) {
     // First of we need to handle the node's actions
@@ -378,8 +375,8 @@ handleTransition(std::unique_ptr<EventIter> &&event_iter) noexcept(false) {
   const auto &e_end = it->getEdgeEnd();
 
   // step
-  if (n_it->sequenceId < e_it->sequenceId) {
-    // We are handling the first node, so the e_it edge was not interpreted, yet
+  if (e_it == e_end || n_it->sequenceId < e_it->sequenceId) {
+    // We are handling the first (maybe even only) node, so the e_it edge was not interpreted, yet
     // Construct the graph and only step the n_it
     it->getCollectedGraph() = std::make_shared<vda5050pp::core::state::Graph>(
         std::list{vda5050pp::core::state::GraphElement(std::make_shared<vda5050::Node>(*n_it))});

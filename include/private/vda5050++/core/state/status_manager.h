@@ -48,25 +48,25 @@ public:
   void setVelocity(const vda5050::Velocity &velocity);
   void resetVelocity();
   std::optional<vda5050::Velocity> getVelocity() const;
-  void setDriving(bool driving);
+  bool setDriving(bool driving);
   void setDistanceSinceLastNode(double distance_since_last_node);
   void resetDistanceSinceLastNode();
 
-  void addLoad(const vda5050::Load &load);
-  void removeLoad(std::string_view load_id);
+  bool addLoad(const vda5050::Load &load);
+  bool removeLoad(std::string_view load_id);
   const std::vector<vda5050::Load> &getLoads();
-  void setOperatingMode(vda5050::OperatingMode operating_mode);
+  bool setOperatingMode(vda5050::OperatingMode operating_mode);
   vda5050::OperatingMode getOperatingMode();
   void setBatteryState(const vda5050::BatteryState &battery_state);
   const vda5050::BatteryState &getBatteryState();
   void requestNewBase();
-  void addError(const vda5050::Error &error);
+  bool addError(const vda5050::Error &error);
   void addInfo(const vda5050::Info &info);
 
   /// \brief Alter the loads vector
   /// \tparam FunctionT callable void(std::vector<vda5050::Load> &)
   /// \param alter_function the alter_function
-  template <typename FunctionT> void loadsAlter(FunctionT alter_function) {
+  template <typename FunctionT> bool loadsAlter(FunctionT alter_function) {
     static_assert(
         vda5050pp::core::common::is_signature<FunctionT, void(std::vector<vda5050::Load> &)>::value,
         "Expected type void(std::vector<vda5050::Load> &)");
@@ -74,22 +74,25 @@ public:
     std::unique_lock lock(this->mutex_);
 
     if (!this->loads_.has_value()) {
-      return;
+      return false;
     }
 
     alter_function(*this->loads_);
+    return true;
   }
 
   /// \brief Alter the operating mode
   /// \tparam FunctionT callable vda5050::OperatingMode(vda5050::OperatingMode)
   /// \param alter_function
-  template <typename FunctionT> void operatingModeAlter(FunctionT alter_function) {
+  template <typename FunctionT> bool operatingModeAlter(FunctionT alter_function) {
     static_assert(
         vda5050pp::core::common::is_signature<FunctionT, vda5050::OperatingMode(
                                                              vda5050::OperatingMode)>::value,
         "Expected type vda5050::OperatingMode(vda5050::OperatingMode)");
     std::unique_lock lock(this->mutex_);
+    auto before = this->operating_mode_;
     this->operating_mode_ = alter_function(this->operating_mode_);
+    return before != this->operating_mode_;
   }
 
   /// \brief Alter the battery state
@@ -106,12 +109,13 @@ public:
   /// \brief Alter the errors vector
   /// \tparam FunctionT callable void(std::vector<vda5050::Error> &)
   /// \param alter_function the alter function
-  template <typename FunctionT> void alterErrors(FunctionT alter_function) {
+  template <typename FunctionT> bool alterErrors(FunctionT alter_function) {
     static_assert(vda5050pp::core::common::is_signature<FunctionT,
                                                         void(std::vector<vda5050::Error> &)>::value,
                   "Expected type void(std::vector<vda5050::Error> &)");
     std::unique_lock lock(this->mutex_);
     alter_function(this->errors_);
+    return true;
   }
 
   /// \brief Alter the infos vector

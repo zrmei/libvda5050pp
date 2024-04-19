@@ -60,6 +60,12 @@ vda5050pp::sinks::NavigationSink vda5050pp::Handle::getNavigationSink() const {
   return vda5050pp::sinks::NavigationSink();
 }
 
+#ifdef LIBVDA5050PP_EXPOSE_LOGGER
+std::shared_ptr<spdlog::logger> vda5050pp::Handle::getLogger(std::string_view key) const {
+  return spdlog::get(key.data());
+}
+#endif
+
 void vda5050pp::Handle::shutdown() const noexcept(false) {
   if (auto ptr = vda5050pp::core::Instance::get().lock(); ptr) {
     ptr->stop();

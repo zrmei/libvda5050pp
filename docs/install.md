@@ -149,6 +149,7 @@ cmake --build build --target ALL_BUILD
 | `LIBVDA5050PP_BUILD_DOCS`                        | Enable `mkdocs` target                                                      |
 | `LIBVDA5050PP_BUILD_STATIC`                      | Build a static library instead of a dynamic one                             |
 | `LIBVDA5050PP_CLEAN_INSTALL`                     | Enable _clean_ installation                                                 |
+| `LIBVDA5050PP_EXPOSE_LOGGER` | Enable `vda5050pp::Handle::getLogger` and expose the `spdlog` dependency. |
 | `LIBVDA5050PP_INSTALL`                           | Generate install targets                                                    |
 | `LIBVDA5050PP_USE_GLIBCXX_DEBUG`                 | Compile with **public** `-D_GLIBCXX_DEBUG` flag                             |
 | `LIBVDA5050PP_CATCH2_VERSION`                    | Overwrite the Catch2 Version                                                |

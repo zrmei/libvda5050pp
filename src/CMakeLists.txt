@@ -101,12 +101,13 @@ target_link_libraries(vda5050++
   PUBLIC
   $<IF:$<BOOL:${LIBVDA5050PP_BUILD_STATIC}>,vda5050_message_structs-static,vda5050_message_structs>
   Threads::Threads
+  $<IF:$<BOOL:${LIBVDA5050PP_EXPOSE_LOGGER}>,spdlog::spdlog,>
 
   PRIVATE
 
   # static
   $<BUILD_INTERFACE:paho-mqttpp3-static>
-  $<BUILD_INTERFACE:spdlog::spdlog>
+  $<IF:$<BOOL:${LIBVDA5050PP_EXPOSE_LOGGER}>,,$<BUILD_INTERFACE:spdlog::spdlog>>
   $<BUILD_INTERFACE:eventpp::eventpp>
   $<BUILD_INTERFACE:tomlplusplus::tomlplusplus>
 )
@@ -120,7 +121,10 @@ target_include_directories(vda5050++
 )
 target_compile_features(vda5050++ PUBLIC cxx_std_17)
 target_compile_options(vda5050++ PRIVATE ${LIBVDA5050PP_CMAKE_CXX_FLAGS})
-target_compile_definitions(vda5050++ PRIVATE
+target_compile_definitions(vda5050++
+PUBLIC
+  ${LIBVDA5050PP_AUX_DEFINITIONS}
+PRIVATE
   LIBVDA5050PP_VERSION=${PROJECT_VERSION}
   ${LIBVDA5050PP_PLATFORM_DEFINITIONS}
 )

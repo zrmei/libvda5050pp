@@ -15,6 +15,10 @@
 #include "vda5050++/sinks/navigation_sink.h"
 #include "vda5050++/sinks/status_sink.h"
 
+#ifdef LIBVDA5050PP_EXPOSE_LOGGER
+#include <spdlog/spdlog.h>
+#endif
+
 namespace vda5050pp {
 
 ///
@@ -74,6 +78,30 @@ public:
   ///\return vda5050pp::sinks::NavigationSink
   ///
   vda5050pp::sinks::NavigationSink getNavigationSink() const;
+
+#ifdef LIBVDA5050PP_EXPOSE_LOGGER
+  ///
+  ///\brief Get a spdlog logger created in the libraries's registry. If the logger does not exist,
+  /// it will return a nullptr. This is intended to access the logger's sinks in user-code
+  /// to prevent synchronization issues and access the log-files of the library.
+  ///
+  /// Available names:
+  //   "agv_handler"
+  //   "interpreter"
+  //   "messages"
+  //   "order"
+  //   "state"
+  //   "mqtt"
+  //   "validation"
+  //   "events"
+  //   "instance" (global library logger)
+  //   "factsheet"
+  ///
+  ///\param key the logger's key
+  ///\return std::shared_ptr<spdlog::logger> the spdlog logger (can be nullptr if not found).
+  ///
+  std::shared_ptr<spdlog::logger> getLogger(std::string_view key) const;
+#endif
 
   /// @brief Shutdown the library. Send an offline message and disconnect from the MQTT Broker.
   void shutdown() const noexcept(false);

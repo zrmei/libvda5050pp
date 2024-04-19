@@ -92,6 +92,25 @@ you will most likely see something like this in your log:
 `...EventManager caught an exception, while processing events: <exception>`.
 The library will be in a failed state and needs to be reinitialized to ensure consistency.
 
+# Handle
+
+The [`vda5050pp::Handle`](doxygen/html/classvda5050pp_1_1Handle.html) can be instantiated to control the library.
+It is a thin-object containing no members, but provides access to the internal `vda5050pp` instance.
+It's lifetime is not bound to the internal instances lifetime. The following member functions can
+be used to control the library:
+
+| Member function             | purpose                                                                                                                                                                                            |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `initialize`                | Initializes the internal instance with a [`vda5050pp::Config`](doxygen/html/classvda5050pp_1_1Config.html) object.                                                                                 |
+| `shutdown`                  | Send offline message and tear-down the internal instance.                                                                                                                                          |
+| `registerActionHandler`     | Register any [`vda5050pp::handler::BaseActionHandler`](doxygen/html/classvda5050pp_1_1handler_1_1BaseActionHandler.html) derived object as an ActionHandler.                                       |
+| `registerNavigationHandler` | Register any [`vda5050pp::handler::BaseNavigationHandler`](doxygen/html/classvda5050pp_1_1handler_1_1BaseNavigationHandler.html) derived object as a NavigationHandler. Overrides the current one. |
+| `registerQueryHandler`      | Register any [`vda5050pp::handler::BaseQueryHandler`](doxygen/html/classvda5050pp_1_1handler_1_1BaseQueryHandler.html) derived object as a QueryHandler. Overrides the current one.                |
+| `getStatusSink`             | Return a new [`vda5050pp::sinks::StatusSink`](doxygen/html/classvda5050pp_1_1sinks_1_1StatusSink.html).                                                                                            |
+| `getNavigationSink`         | Return a new [`vda5050pp::sinks::NavigationSink`](doxygen/html/classvda5050pp_1_1sinks_1_1NavigationSink.html).                                                                                    |
+| `getLogger`                 | Return the internal `spdlog::logger` of a module, by it's key. This function is by default not available. To activate it, see [Install/Configuration Options](/install/#configuration-options).    |
+
+
 # Handler
 
 ## ActionState

@@ -108,6 +108,15 @@ else()
     set(LIBVDA5050PP_MAIN_PROJECT OFF)
 endif()
 
+# Logging part
+set(LIBVDA5050PP_AUX_DEFINITIONS "")
+option(LIBVDA5050PP_EXPOSE_LOGGER "Make the libVDA5050++ expose access to it's loggers (exposes spdlog dependency)." OFF)
+if (LIBVDA5050PP_EXPOSE_LOGGER)
+    message(STATUS "Exposing spdlog loggers.")
+    list(APPEND LIBVDA5050PP_AUX_DEFINITIONS "LIBVDA5050PP_EXPOSE_LOGGER")
+    set(LIBVDA5050PP_INSTALL_CONFIG_EXTRA_LINES "find_package(spdlog ${LIBVDA5050PP_SPDLOG_VERSION} REQUIRED)")
+endif()
+
 # only use code coverage with clang (include here, such that child projects do not initialize
 # code-cov before us)
 if(BUILD_TESTING AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

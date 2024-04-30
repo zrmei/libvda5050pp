@@ -120,7 +120,7 @@ else()
             "PAHO_HIGH_PERFORMANCE ON"
     SYSTEM YES
     # This is currently required, see below
-    PATCH_COMMAND git apply ${CMAKE_CURRENT_SOURCE_DIR}/patches/0001-build-FindPahoMqttC-use-static-suffix.patch
+    PATCH_COMMAND git apply --reject ${CMAKE_CURRENT_SOURCE_DIR}/patches/0001-build-FindPahoMqttC-use-static-suffix.patch
   )
   # The patch is needed, since paho currently searches the static paho-c-lib on non WIN32 systems without the
   # "static" suffix, such that the shared library must be available and will be linked, see:

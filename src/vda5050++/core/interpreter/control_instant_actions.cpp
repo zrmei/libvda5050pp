@@ -39,8 +39,8 @@ static const vda5050pp::agv_description::ActionDeclaration k_stopPauseDeclaratio
     {},          {vda5050::BlockingType::HARD},          true,         false,
     false,
 };
-static const vda5050pp::agv_description::ActionDeclaration k_requestFactsheetDeclaration{
-    "requestFactsheet",
+static const vda5050pp::agv_description::ActionDeclaration k_factsheetRequestDeclaration{
+    "factsheetRequest",
     "Request the factsheet from the AGV.",
     std::nullopt,
     {},
@@ -64,7 +64,7 @@ static const vda5050pp::agv_description::ActionDeclaration k_stateRequestDeclara
 
 static const std::set<vda5050pp::agv_description::ActionDeclaration> k_declarations{
     k_cancelOrderDeclaration,      k_startPauseDeclaration,   k_stopPauseDeclaration,
-    k_requestFactsheetDeclaration, k_stateRequestDeclaration,
+    k_factsheetRequestDeclaration, k_stateRequestDeclaration,
 };
 
 bool vda5050pp::core::interpreter::isControlInstantAction(const vda5050::Action &instant_action) {
@@ -267,7 +267,7 @@ vda5050pp::core::interpreter::makeResumeControlBlock(
 }
 
 std::shared_ptr<vda5050pp::core::events::EventControlBlock>
-vda5050pp::core::interpreter::makeRequestFactsheetControlBlock(
+vda5050pp::core::interpreter::makeFactsheetRequestControlBlock(
     std::shared_ptr<const vda5050::Action> action) {
   auto send_fs = std::make_shared<vda5050pp::core::events::FunctionBlock>();
   send_fs->setFunction([] {
@@ -326,8 +326,8 @@ vda5050pp::core::interpreter::makeControlInstantActionControlBlock(
     return makePauseControlBlock(action);
   } else if (action->actionType == "stopPause") {
     return makeResumeControlBlock(action);
-  } else if (action->actionType == "requestFactsheet") {
-    return makeRequestFactsheetControlBlock(action);
+  } else if (action->actionType == "factsheetRequest") {
+    return makeFactsheetRequestControlBlock(action);
   } else if (action->actionType == "stateRequest") {
     return makeStateRequestControlBlock(action);
   } else {

@@ -35,7 +35,7 @@ std::shared_ptr<vda5050pp::core::events::EventControlBlock> makePauseControlBloc
 std::shared_ptr<vda5050pp::core::events::EventControlBlock> makeResumeControlBlock(
     std::shared_ptr<const vda5050::Action> action);
 
-std::shared_ptr<vda5050pp::core::events::EventControlBlock> makeRequestFactsheetControlBlock(
+std::shared_ptr<vda5050pp::core::events::EventControlBlock> makeFactsheetRequestControlBlock(
     std::shared_ptr<const vda5050::Action> action);
 
 std::shared_ptr<vda5050pp::core::events::EventControlBlock> makeStateRequestControlBlock(

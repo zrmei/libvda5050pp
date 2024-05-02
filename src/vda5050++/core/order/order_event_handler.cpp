@@ -57,7 +57,7 @@ void OrderEventHandler::handleInterpreterDone(
   }
 
   try {
-    this->scheduler_->update();
+    this->scheduler_->commitQueue();
   } catch (const vda5050pp::VDA5050PPError &e) {
     getOrderLogger()->error("Scheduler threw an exception: {}", e.dump());
     // TODO: global error state?

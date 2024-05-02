@@ -44,8 +44,9 @@ assertActionClearEvent() {
 
 static std::function<void(std::shared_ptr<vda5050pp::core::events::InterpreterEvent>)>
 assertActionGroupEvent(vda5050::BlockingType group_b_type,
-                       std::initializer_list<std::string_view> ids) {
-  return [group_b_type, ids](std::shared_ptr<vda5050pp::core::events::InterpreterEvent> event) {
+                       std::initializer_list<const char *> ids) {
+  return [group_b_type, v_ids = std::vector<std::string>(ids.begin(), ids.end())](
+             std::shared_ptr<vda5050pp::core::events::InterpreterEvent> event) {
     THEN("The Event is a YieldActionGroupEvent") {
       REQUIRE(event->getId() ==
               vda5050pp::core::events::InterpreterEventType::k_yield_action_group);
@@ -54,9 +55,9 @@ assertActionGroupEvent(vda5050::BlockingType group_b_type,
 
     THEN("The BlockingType matches") { REQUIRE(c_event->blocking_type_ceiling == group_b_type); }
     THEN("The Actions match") {
-      REQUIRE(c_event->actions.size() == ids.size());
+      REQUIRE(c_event->actions.size() == v_ids.size());
       auto it = c_event->actions.begin();
-      for (const auto &id : ids) {
+      for (const auto &id : v_ids) {
         THEN(fmt::format("Has Action with id {}", id)) { REQUIRE(it->get()->actionId == id); }
         it++;
       }

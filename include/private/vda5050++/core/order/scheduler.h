@@ -177,6 +177,7 @@ private:
   std::mutex access_mutex_;
   std::unique_ptr<SchedulerState> state_;
   std::deque<std::shared_ptr<vda5050pp::core::events::InterpreterEvent>> rcv_evt_queue_;
+  std::deque<std::shared_ptr<vda5050pp::core::events::InterpreterEvent>> rcv_evt_queue_staging_;
   std::deque<std::shared_ptr<vda5050pp::core::events::YieldInstantActionGroup>>
       rcv_interrupt_queue_;
   vda5050::BlockingType current_action_blocking_type_ = vda5050::BlockingType::NONE;
@@ -207,7 +208,7 @@ protected:
       &getRcvInterruptQueue() const;
   std::shared_ptr<NavigationTask> &getNavigationTask();
 
-  void clearQueues();
+  void clearQueues(bool keep_nav = false);
   void updateTasks();
   void updateTasksInterruptMapping();
   void updateFetchNext();
@@ -233,6 +234,7 @@ public:
       std::optional<Lock> lock = std::nullopt);
   void enqueue(std::shared_ptr<vda5050pp::core::events::InterpreterEvent> evt,
                std::optional<Lock> lock = std::nullopt);
+  void commitQueue(std::optional<Lock> lock = std::nullopt);
 
   std::string describe() const;
 };

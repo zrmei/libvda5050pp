@@ -72,6 +72,13 @@ public:
   ///
   ///\brief This function will be called by the library, once the AGV has cancel navigation.
   ///
+  /// Once this function was called, the AGV has to stop as soon as possible. The AGV
+  /// may flag each node of the current segment as reached. If it can stop before reaching
+  /// the last node of the segment, it should do so and call setFailed() to indicate that the
+  /// navigation was not completely finished. Once the last node of the segment was reached or
+  /// the setFailed() function was called, the library changes the state of the associated
+  /// cancel instant action.
+  ///
   virtual void cancel() = 0;
 
   ///

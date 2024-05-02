@@ -329,6 +329,14 @@ bool NavigationTask::isTerminal() const {
   return this->state_->isTerminal();
 }
 
+bool NavigationTask::isFailed() const {
+  if (this->state_ == nullptr) {
+    throw vda5050pp::VDA5050PPNullPointer(MK_EX_CONTEXT("this->state_ is nullptr"));
+  }
+
+  return this->state_->isFailed();
+}
+
 bool NavigationTask::isPaused() const {
   if (this->state_ == nullptr) {
     throw vda5050pp::VDA5050PPNullPointer(MK_EX_CONTEXT("this->state_ is nullptr"));

@@ -324,6 +324,7 @@ inline bool isResumable(vda5050pp::misc::OrderStatus status) {
 inline bool isCancelable(vda5050pp::misc::OrderStatus status) {
   return status == vda5050pp::misc::OrderStatus::k_order_idle_paused ||
          status == vda5050pp::misc::OrderStatus::k_order_active ||
+         status == vda5050pp::misc::OrderStatus::k_order_idle ||
          status == vda5050pp::misc::OrderStatus::k_order_paused;
 }
 

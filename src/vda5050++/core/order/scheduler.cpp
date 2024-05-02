@@ -27,7 +27,7 @@ SchedulerIdle::SchedulerIdle(Scheduler &scheduler, bool notify) : SchedulerState
   this->scheduler().current_segment_ = std::nullopt;
 }
 std::pair<std::unique_ptr<SchedulerState>, bool> SchedulerIdle::cancel() {
-  throw vda5050pp::VDA5050PPInvalidState(MK_EX_CONTEXT("Cannot cancel during idle"));
+  return {std::make_unique<SchedulerCanceling>(this->scheduler()), true};
 }
 std::pair<std::unique_ptr<SchedulerState>, bool> SchedulerIdle::pause() {
   // Instantly go to idle paused, since no tasks run anyways
@@ -102,7 +102,7 @@ std::pair<std::unique_ptr<SchedulerState>, bool> SchedulerActive::cancel() {
     nt->transition(vda5050pp::core::order::NavigationTransition::doCancel());
   }
 
-  this->scheduler().clearQueues();
+  this->scheduler().clearQueues(true);
 
   return {std::make_unique<SchedulerCanceling>(this->scheduler(), true), false};
 }
@@ -165,6 +165,7 @@ std::pair<std::unique_ptr<SchedulerState>, bool> SchedulerCanceling::interrupt()
 std::pair<std::unique_ptr<SchedulerState>, bool> SchedulerCanceling::update() {
   this->scheduler().updateTasks();
   this->scheduler().updateTasksInterruptMapping();
+  this->scheduler().updateFetchNext();
 
   if (this->scheduler().getActiveActionTasksById().empty() &&
       this->scheduler().getNavigationTask() == nullptr) {
@@ -386,9 +387,12 @@ const std::deque<std::shared_ptr<vda5050pp::core::events::YieldInstantActionGrou
   return this->rcv_interrupt_queue_;
 }
 
-void Scheduler::clearQueues() {
+void Scheduler::clearQueues(bool keep_nav) {
   std::vector<std::string> forget_ids;
 
+  std::deque<std::shared_ptr<vda5050pp::core::events::InterpreterEvent>> rcv_evt_queue_nav_only_;
+
+  bool reached_blocking = false;
   for (; !this->rcv_evt_queue_.empty(); this->rcv_evt_queue_.pop_front()) {
     auto elem = this->rcv_evt_queue_.front();
     if (elem->getId() == vda5050pp::core::events::InterpreterEventType::k_yield_action_group) {
@@ -397,8 +401,16 @@ void Scheduler::clearQueues() {
                ->actions) {
         forget_ids.push_back(action->actionId);
       }
+    } else if (keep_nav && !reached_blocking) {
+      if (std::static_pointer_cast<vda5050pp::core::events::YieldNavigationStepEvent>(elem)
+              ->has_stop_at_goal_hint) {
+        reached_blocking = true;
+      }
+      rcv_evt_queue_nav_only_.push_back(elem);
     }
   }
+
+  this->rcv_evt_queue_ = std::move(rcv_evt_queue_nav_only_);
 
   for (; !this->rcv_interrupt_queue_.empty(); this->rcv_interrupt_queue_.pop_front()) {
     auto elem = this->rcv_interrupt_queue_.front();
@@ -454,6 +466,10 @@ void Scheduler::updateTasks() {
 
   // Update navigation
   if (this->navigation_task_ != nullptr && this->navigation_task_->isTerminal()) {
+    if (this->navigation_task_->isFailed()) {
+      // No further navigation
+      this->clearQueues(false);
+    }
     getOrderLogger()->debug("Scheduler::updateTasks() - dropping terminal navigation_task");
     this->navigation_task_ = nullptr;
   }
@@ -802,9 +818,22 @@ void Scheduler::enqueue(std::shared_ptr<vda5050pp::core::events::InterpreterEven
 
   getOrderLogger()->debug("Scheduler::enqueue(type={})", int(evt->getId()));
 
-  this->rcv_evt_queue_.push_back(evt);
+  this->rcv_evt_queue_staging_.push_back(evt);
 
-  // Do not update yet, to allow accumulation of all yield events by the interpreter
+  // Do not commit yet, to allow accumulation of all yield events by the interpreter
+}
+
+void Scheduler::commitQueue(std::optional<Lock> lock) {
+  auto e_lock = this->ensureLock(std::move(lock));
+
+  getOrderLogger()->debug("Scheduler::commitQueue()");
+
+  while (!this->rcv_evt_queue_staging_.empty()) {
+    this->rcv_evt_queue_.push_back(this->rcv_evt_queue_staging_.front());
+    this->rcv_evt_queue_staging_.pop_front();
+  }
+
+  this->update(std::move(e_lock));
 }
 
 std::string Scheduler::describe() const { return ""; }

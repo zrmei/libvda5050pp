@@ -24,6 +24,11 @@ void StateEventHandler::handleGraphExtensionEvent(
       vda5050pp::core::state::Graph(graph), data->order_update_id);
   auto [__, delta_last] = graph.baseBounds();
 
+  if (delta_first > delta_last) {
+    getStateLogger()->warn("Graph extension resulted in empty delta bounds. Ignoring.");
+    return;
+  }
+
   // Extract delta nodes/edges
   graph = graph.subgraph({delta_first, delta_last});
   auto base_increased = std::make_shared<vda5050pp::events::NavigationBaseIncreased>();

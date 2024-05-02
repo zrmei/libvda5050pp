@@ -107,13 +107,6 @@ static bool isOrderStatus(std::shared_ptr<vda5050pp::core::events::OrderStatus> 
 std::shared_ptr<vda5050pp::core::events::EventControlBlock>
 vda5050pp::core::interpreter::makeCancelControlBlock(
     std::shared_ptr<const vda5050::Action> action) {
-  auto done_run = [action]() {
-    auto running_evt = std::make_shared<vda5050pp::core::events::OrderActionStatusChanged>();
-    running_evt->action_id = action->actionId;
-    running_evt->action_status = vda5050::ActionStatus::RUNNING;
-    vda5050pp::core::Instance::ref().getOrderEventManager().synchronousDispatch(running_evt);
-  };
-
   auto done_fin = [action]() {
     auto clear_evt = std::make_shared<vda5050pp::core::events::OrderClearAfterCancel>();
     clear_evt->cancel_action = action;
@@ -133,12 +126,12 @@ vda5050pp::core::interpreter::makeCancelControlBlock(
     cancel->status = vda5050pp::core::events::InterpreterOrderControl::Status::k_cancel;
     cancel->associated_action = action;
     Instance::ref().getInterpreterEventManager().dispatch(cancel);
-  });
 
-  auto latch_run = std::make_shared<
-      vda5050pp::core::events::LambdaEventLatch<vda5050pp::core::events::OrderStatus>>(
-      Instance::ref().getOrderEventManager().getScopedSubscriber(),
-      isOrderStatus<Status::k_order_canceling>, std::move(done_run));
+    auto running_evt = std::make_shared<vda5050pp::core::events::OrderActionStatusChanged>();
+    running_evt->action_id = action->actionId;
+    running_evt->action_status = vda5050::ActionStatus::RUNNING;
+    vda5050pp::core::Instance::ref().getOrderEventManager().synchronousDispatch(running_evt);
+  });
 
   auto latch_fin = std::make_shared<
       vda5050pp::core::events::LambdaEventLatch<vda5050pp::core::events::OrderStatus>>(
@@ -147,7 +140,6 @@ vda5050pp::core::interpreter::makeCancelControlBlock(
 
   auto chain = std::make_shared<vda5050pp::core::events::EventControlChain>();
   chain->add(fn_cancel);
-  chain->add(latch_run);
   chain->add(latch_fin);
 
   return chain;

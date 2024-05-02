@@ -67,19 +67,21 @@ public:
       NavigationTransition transition) = 0;
   virtual void effect() = 0;
   virtual bool isTerminal() = 0;
+  virtual bool isFailed() = 0;
   virtual bool isPaused() = 0;
   virtual std::string describe() = 0;
 };
 
-template <bool terminal, bool paused> class NavigationStateT : public NavigationState {
+template <bool terminal, bool failed, bool paused> class NavigationStateT : public NavigationState {
 public:
   explicit NavigationStateT(NavigationTask &task) : NavigationState(task) {}
   ~NavigationStateT() override = default;
   bool isTerminal() override { return terminal; }
+  bool isFailed() override { return failed; }
   bool isPaused() override { return paused; }
 };
 
-class NavigationWaiting : public NavigationStateT<false, false> {
+class NavigationWaiting : public NavigationStateT<false, false, false> {
 public:
   explicit NavigationWaiting(NavigationTask &task);
   [[nodiscard]] std::unique_ptr<NavigationState> transfer(NavigationTransition transition) override;
@@ -87,7 +89,7 @@ public:
   std::string describe() override;
 };
 
-class NavigationFirstInProgress : public NavigationStateT<false, false> {
+class NavigationFirstInProgress : public NavigationStateT<false, false, false> {
 public:
   explicit NavigationFirstInProgress(NavigationTask &task);
   [[nodiscard]] std::unique_ptr<NavigationState> transfer(NavigationTransition transition) override;
@@ -95,7 +97,7 @@ public:
   std::string describe() override;
 };
 
-class NavigationInProgress : public NavigationStateT<false, false> {
+class NavigationInProgress : public NavigationStateT<false, false, false> {
 public:
   explicit NavigationInProgress(NavigationTask &task);
   [[nodiscard]] std::unique_ptr<NavigationState> transfer(NavigationTransition transition) override;
@@ -103,7 +105,7 @@ public:
   std::string describe() override;
 };
 
-class NavigationPausing : public NavigationStateT<false, false> {
+class NavigationPausing : public NavigationStateT<false, false, false> {
 public:
   explicit NavigationPausing(NavigationTask &task);
   [[nodiscard]] std::unique_ptr<NavigationState> transfer(NavigationTransition transition) override;
@@ -111,7 +113,7 @@ public:
   std::string describe() override;
 };
 
-class NavigationPaused : public NavigationStateT<false, true> {
+class NavigationPaused : public NavigationStateT<false, false, true> {
 public:
   explicit NavigationPaused(NavigationTask &task);
   [[nodiscard]] std::unique_ptr<NavigationState> transfer(NavigationTransition transition) override;
@@ -119,7 +121,7 @@ public:
   std::string describe() override;
 };
 
-class NavigationResuming : public NavigationStateT<false, true> {
+class NavigationResuming : public NavigationStateT<false, false, true> {
 public:
   explicit NavigationResuming(NavigationTask &task);
   [[nodiscard]] std::unique_ptr<NavigationState> transfer(NavigationTransition transition) override;
@@ -127,7 +129,7 @@ public:
   std::string describe() override;
 };
 
-class NavigationCanceling : public NavigationStateT<false, false> {
+class NavigationCanceling : public NavigationStateT<false, false, false> {
 public:
   explicit NavigationCanceling(NavigationTask &task);
   [[nodiscard]] std::unique_ptr<NavigationState> transfer(NavigationTransition transition) override;
@@ -135,7 +137,7 @@ public:
   std::string describe() override;
 };
 
-class NavigationFailed : public NavigationStateT<true, false> {
+class NavigationFailed : public NavigationStateT<true, true, false> {
 public:
   explicit NavigationFailed(NavigationTask &task);
   [[nodiscard]] std::unique_ptr<NavigationState> transfer(NavigationTransition transition) override;
@@ -143,7 +145,7 @@ public:
   std::string describe() override;
 };
 
-class NavigationDone : public NavigationStateT<true, false> {
+class NavigationDone : public NavigationStateT<true, false, false> {
 public:
   explicit NavigationDone(NavigationTask &task);
   [[nodiscard]] std::unique_ptr<NavigationState> transfer(NavigationTransition transition) override;
@@ -184,6 +186,7 @@ public:
   void transition(NavigationTransition transition);
 
   bool isTerminal() const;
+  bool isFailed() const;
   bool isPaused() const;
 
   std::string describe() const;

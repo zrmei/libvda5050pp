@@ -81,9 +81,28 @@ public:
 ///
 struct ActionCallbacks {
   using CallbackT = std::function<void(ActionState &)>;
+  ///
+  ///\brief The start callback is called by the library once the action shall start.
+  /// The user has to call setRunning() to indicate that the action is running.
+  ///
   CallbackT on_start;
+  ///
+  ///\brief The pause callback is called by the library once the action shall pause.
+  /// The user has to call setPaused() to indicate that the action is paused.
+  ///
   CallbackT on_pause;
+  ///
+  /// \brief The resume callback is called by the library once the action shall resume.
+  /// The user has to call setRunning() to indicate that the action is running.
+  ///
   CallbackT on_resume;
+  ///
+  ///\brief The cancel callback is called by the library once the action shall cancel.
+  /// The user has the choice to either call setFailed() or setFinished() to indicate that the
+  /// action stopped before finishing or finished successfully. After calling one of these
+  /// functions, the library will change the state of the cancel instant action (when no other tasks
+  /// are pending).
+  ///
   CallbackT on_cancel;
 
   ActionCallbacks() = default;

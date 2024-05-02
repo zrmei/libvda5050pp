@@ -347,7 +347,12 @@ handleInitial(std::unique_ptr<EventIter> &&event_iter) noexcept(false) {
     throw vda5050pp::VDA5050PPInvalidArgument(MK_FN_EX_CONTEXT("No Nodes remaining"));
   }
 
-  if (n_it->sequenceId < e_it->sequenceId && it->getOrderUpdateId() == 0) {
+  if (e_it == it->getEdgeEnd()) {
+    vda5050pp::core::getInterpreterLogger()->debug("handleInitial(): No edges -> no transition");
+  }
+
+  if (e_it == it->getEdgeEnd() ||
+      (n_it->sequenceId < e_it->sequenceId && it->getOrderUpdateId() == 0)) {
     // First of we need to handle the node's actions
     it->getIterState() = EventIterImpl::IterState::k_handling_pre_node_action;
   } else {
@@ -373,6 +378,11 @@ handleTransition(std::unique_ptr<EventIter> &&event_iter) noexcept(false) {
   auto &e_it = it->getEdgeIter();
   const auto &n_end = it->getNodeEnd();
   const auto &e_end = it->getEdgeEnd();
+
+  if (n_it == n_end) {
+    vda5050pp::core::getInterpreterLogger()->error(
+        "handleTransition() Invariant \"has nodes\" violated");
+  }
 
   // step
   if (e_it == e_end || n_it->sequenceId < e_it->sequenceId) {

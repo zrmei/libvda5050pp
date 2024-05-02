@@ -210,7 +210,7 @@ TEST_CASE("core::order::Scheduler - only navigation", "[core][order]") {
               [](auto) { return true; });
 
       scheduler.enqueue(evt1);
-      scheduler.update();
+      scheduler.commitQueue();
       assertState(vda5050pp::core::order::SchedulerStateType::k_active)(scheduler);
       assertOrderStatus(evt_order_status, vda5050pp::misc::OrderStatus::k_order_active);
       assertNavigation(evt_navigation, "n0", "e1");
@@ -240,7 +240,7 @@ TEST_CASE("core::order::Scheduler - only navigation", "[core][order]") {
                 [](auto) { return true; });
         scheduler.enqueue(evt2);
         scheduler.enqueue(evt3);
-        scheduler.update();
+        scheduler.commitQueue();
 
         THEN("No order/nav events are generated") {
           evt_order_status.assertNone();
@@ -393,7 +393,7 @@ TEST_CASE("core::order::Scheduler - only navigation with actions", "[core][order
     scheduler.enqueue(evt2);
     scheduler.enqueue(evt2a);
     scheduler.enqueue(evt3);
-    scheduler.update();
+    scheduler.commitQueue();
 
     assertOrderStatus(evt_order_status, vda5050pp::misc::OrderStatus::k_order_active);
     assertNavigation(evt_navigation, "n0", "e1");
@@ -595,7 +595,7 @@ TEST_CASE("core::order::Scheduler - pause/resume", "[core][order]") {
 
     scheduler.enqueue(evt1);
     scheduler.enqueue(evt1a);
-    scheduler.update();
+    scheduler.commitQueue();
 
     assertOrderStatus(evt_order_status, vda5050pp::misc::OrderStatus::k_order_active);
     assertNavigation(evt_navigation, "n0", "e1");
@@ -829,7 +829,7 @@ TEST_CASE("core::order::Scheduler - cancel", "[core][order]") {
     scheduler.enqueue(evt1);
     scheduler.enqueue(evt1a);
     scheduler.enqueue(evt2);
-    scheduler.update();
+    scheduler.commitQueue();
 
     assertOrderStatus(evt_order_status, vda5050pp::misc::OrderStatus::k_order_active);
     assertNavigation(evt_navigation, "n2", "e1");
@@ -872,13 +872,13 @@ TEST_CASE("core::order::Scheduler - cancel", "[core][order]") {
 
         scheduler.navigationTransition(vda5050pp::core::order::NavigationTransition::toSeqId(2));
 
-        THEN("No further events were generated") {
+        THEN("Only navigation events are generated") {
           evt_order_status.assertNone();
-          evt_navigation.assertNone();
+          assertNavigation(evt_navigation, "n4", "e3");
           evt_nav_ctrl.assertNone();
         }
       }
-      WHEN("The actions finish/fail") {
+      WHEN("The actions and remaining navigation finish/fail") {
         {
           auto evt_order_status =
               EventAsserter<vda5050pp::core::events::OrderStatus>::forOrderEvent(
@@ -892,6 +892,7 @@ TEST_CASE("core::order::Scheduler - cancel", "[core][order]") {
 
           scheduler.actionTransition("a11", vda5050pp::core::order::ActionTransition::isFinished());
           scheduler.actionTransition("a12", vda5050pp::core::order::ActionTransition::isFailed());
+          scheduler.navigationTransition(vda5050pp::core::order::NavigationTransition::isFailed());
 
           assertOrderStatus(evt_order_status, vda5050pp::misc::OrderStatus::k_order_idle);
 
@@ -979,7 +980,7 @@ TEST_CASE("core::order::Scheduler - interrupt", "[core][order]") {
     scheduler.enqueue(evt1);
     scheduler.enqueue(evt1a);
     scheduler.enqueue(evt2);
-    scheduler.update();
+    scheduler.commitQueue();
 
     assertOrderStatus(evt_order_status, vda5050pp::misc::OrderStatus::k_order_active);
     assertNavigation(evt_navigation, "n2", "e1");
@@ -1213,7 +1214,7 @@ TEST_CASE("core::order::Scheduler - interrupt edge cases", "[core][order]") {
             [](auto) { return true; });
 
         scheduler.enqueue(evt1);
-        scheduler.update();
+        scheduler.commitQueue();
 
         evt_nav.assertNone();
       }
@@ -1255,7 +1256,7 @@ TEST_CASE("core::order::Scheduler - interrupt edge cases", "[core][order]") {
             [](auto) { return true; });
 
         scheduler.enqueue(evt1);
-        scheduler.update();
+        scheduler.commitQueue();
 
         assertNavigation(evt_nav, "n2", "e1");
       }
